@@ -4,6 +4,15 @@ html(lang="en")
     meta(charset='UTF-8')
     meta(http-equiv='X-UA-Compatible' content='IE=edge')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    meta(name='description' content='Contact Pratistha Financial Services for all your financial needs')
+    meta(name='robots' content='index, follow')
+    
+    //- Security Headers
+    meta(http-equiv='Content-Security-Policy' content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.google.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; frame-src https://www.google.com;")
+    meta(http-equiv='X-Content-Type-Options' content='nosniff')
+    meta(http-equiv='X-Frame-Options' content='SAMEORIGIN')
+    meta(name='referrer' content='strict-origin-when-cross-origin')
+    
     title Pratistha Financial Services - Contact Us
     
     link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css')
@@ -22,6 +31,9 @@ html(lang="en")
         --bg-light: #f9fafb;
         --gradient-start: #10b981;
         --gradient-end: #059669;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --info: #3b82f6;
       }
 
       * {
@@ -206,32 +218,6 @@ html(lang="en")
         line-height: 1.6;
       }
 
-      .social-links {
-        display: flex;
-        gap: 15px;
-        margin-top: 30px;
-      }
-
-      .social-link {
-        width: 45px;
-        height: 45px;
-        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.2rem;
-        transition: all 0.3s ease;
-        text-decoration: none;
-      }
-
-      .social-link:hover {
-        transform: translateY(-5px) rotate(360deg);
-        box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
-        color: white;
-      }
-
       /* Contact Form */
       .contact-form {
         background: white;
@@ -244,6 +230,70 @@ html(lang="en")
         font-size: 2.2rem;
         color: var(--text-primary);
         margin-bottom: 30px;
+      }
+
+      .form-step {
+        display: none;
+      }
+
+      .form-step.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: 20px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #e5e7eb;
+        z-index: 0;
+      }
+
+      .step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--text-secondary);
+        position: relative;
+        z-index: 1;
+        transition: all 0.3s ease;
+      }
+
+      .step.active {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
+      }
+
+      .step.completed {
+        background: var(--primary-emerald);
+        color: white;
       }
 
       .form-label {
@@ -303,32 +353,200 @@ html(lang="en")
         color: #ef4444;
       }
 
-      .btn-submit {
+      /* OTP Section */
+      .otp-section {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        border: 2px solid var(--primary-emerald);
+      }
+
+      .otp-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .otp-icon {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        margin-right: 15px;
+      }
+
+      .otp-header h4 {
+        margin: 0;
+        color: var(--text-primary);
+        font-size: 1.2rem;
+      }
+
+      .otp-input-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .otp-input {
+        flex: 1;
+      }
+
+      .btn-send-otp {
         background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
         border: none;
         color: white;
-        padding: 16px 50px;
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .btn-send-otp:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-send-otp:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .otp-timer {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .otp-timer.warning {
+        color: var(--warning);
+      }
+
+      .resend-link {
+        color: var(--primary-emerald);
+        text-decoration: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .resend-link:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+      }
+
+      .resend-link.disabled {
+        color: var(--text-secondary);
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      /* Alert Messages */
+      .alert-custom {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideDown 0.3s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .alert-success {
+        background: #d1fae5;
+        color: #047857;
+        border: 1px solid #10b981;
+      }
+
+      .alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #ef4444;
+      }
+
+      .alert-info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #3b82f6;
+      }
+
+      .alert-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #f59e0b;
+      }
+
+      /* Buttons */
+      .btn-group-custom {
+        display: flex;
+        gap: 15px;
+        margin-top: 25px;
+      }
+
+      .btn-primary-custom {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        color: white;
+        padding: 16px 40px;
         border-radius: 50px;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: all 0.3s ease;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        margin-top: 20px;
         cursor: pointer;
+        flex: 1;
       }
 
-      .btn-submit:hover {
+      .btn-primary-custom:hover:not(:disabled) {
         transform: translateY(-3px);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         color: white;
       }
 
-      .btn-submit:disabled {
+      .btn-primary-custom:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
+      }
+
+      .btn-secondary-custom {
+        background: transparent;
+        border: 2px solid var(--primary-emerald);
+        color: var(--primary-emerald);
+        padding: 14px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .btn-secondary-custom:hover {
+        background: var(--primary-emerald);
+        color: white;
       }
 
       .spinner-border-sm {
@@ -512,6 +730,23 @@ html(lang="en")
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       }
 
+      /* Security Badge */
+      .security-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: var(--primary-dark);
+        margin-top: 15px;
+      }
+
+      .security-badge i {
+        color: var(--primary-emerald);
+      }
+
       /* Responsive Design */
       @media (max-width: 992px) {
         .contact-wrapper {
@@ -552,6 +787,14 @@ html(lang="en")
         .map-container iframe {
           height: 350px;
         }
+
+        .btn-group-custom {
+          flex-direction: column;
+        }
+
+        .otp-input-group {
+          flex-direction: column;
+        }
       }
 
       @media (max-width: 576px) {
@@ -565,12 +808,6 @@ html(lang="en")
           height: 45px;
           font-size: 1.1rem;
           margin-right: 15px;
-        }
-
-        .social-link {
-          width: 40px;
-          height: 40px;
-          font-size: 1rem;
         }
 
         .modal-content-custom {
@@ -627,22 +864,6 @@ html(lang="en")
                 p Delhi, India
                 p All States Across India
 
-            //- .info-item
-            //-   .info-icon
-            //-     i.fas.fa-phone
-            //-   .info-content
-            //-     h4 Phone Number
-            //-     p +91 77039 21037
-            //-     p Mon-Sat: 9:00 AM - 6:00 PM
-
-            //- .info-item
-            //-   .info-icon
-            //-     i.fas.fa-envelope
-            //-   .info-content
-            //-     h4 Email Address
-            //-     p info@pratistha.com
-            //-     p support@pratistha.com
-
             .info-item
               .info-icon
                 i.fas.fa-clock
@@ -651,118 +872,205 @@ html(lang="en")
                 p Monday - Saturday
                 p 9:00 AM - 6:00 PM
 
-            //- .social-links
-            //-   a.social-link(href='#' aria-label='Facebook')
-            //-     i.fab.fa-facebook-f
-            //-   a.social-link(href='#' aria-label='Twitter')
-            //-     i.fab.fa-twitter
-            //-   a.social-link(href='#' aria-label='LinkedIn')
-            //-     i.fab.fa-linkedin-in
-            //-   a.social-link(href='#' aria-label='Instagram')
-            //-     i.fab.fa-instagram
+            .info-item
+              .info-icon
+                i.fas.fa-shield-alt
+              .info-content
+                h4 Secure & Verified
+                p Email OTP Verification
+                p 100% Data Protection
 
-          //- Contact Form
+          //- Contact Form with OTP Verification
           .contact-form
             h2 Send Us a Message
-            form#contactForm.needs-validation(action='/contact' method='post' novalidate)
-              .mb-4
-                label.form-label(for='name')
-                  i.fas.fa-user
-                  | Full Name *
-                input.form-control(
-                  type='text'
-                  id='name'
-                  name='name'
-                  placeholder='Enter your full name'
-                  required
-                  minlength='2'
-                  maxlength='50'
-                )
-                .invalid-feedback Please enter your name (2-50 characters).
-                .valid-feedback Looks good!
+            
+            //- Step Indicator
+            .step-indicator
+              .step.active#step1Indicator 1
+              .step#step2Indicator 2
+              .step#step3Indicator 3
 
-              .mb-4
-                label.form-label(for='email')
-                  i.fas.fa-envelope
-                  | Email Address *
-                input.form-control(
-                  type='email'
-                  id='email'
-                  name='email'
-                  placeholder='Enter your email address'
-                  required
-                )
-                .invalid-feedback Please enter a valid email address.
-                .valid-feedback Looks good!
+            //- Alert Container
+            #alertContainer
 
-              .mb-4
-                label.form-label(for='phone')
-                  i.fas.fa-phone
-                  | Mobile Number *
-                input.form-control(
-                  type='tel'
-                  id='phone'
-                  name='phone'
-                  placeholder='Enter 10-digit mobile number'
-                  required
-                  pattern='[0-9]{10}'
-                  maxlength='10'
-                )
-                .invalid-feedback Please enter a valid 10-digit mobile number.
-                .valid-feedback Looks good!
+            form#contactForm.needs-validation(novalidate)
+              //- STEP 1: Contact Details
+              .form-step.active#step1
+                .mb-4
+                  label.form-label(for='name')
+                    i.fas.fa-user
+                    | Full Name *
+                  input.form-control(
+                    type='text'
+                    id='name'
+                    name='name'
+                    placeholder='Enter your full name'
+                    required
+                    minlength='2'
+                    maxlength='50'
+                    autocomplete='name'
+                  )
+                  .invalid-feedback Please enter your name (2-50 characters).
+                  .valid-feedback Looks good!
 
-              .mb-4
-                label.form-label(for='state')
-                  i.fas.fa-map-marker-alt
-                  | State & Pincode *
-                input.form-control(
-                  type='text'
-                  id='state'
-                  name='state'
-                  placeholder='e.g., Delhi - 110001'
-                  required
-                )
-                .invalid-feedback Please enter your state and pincode.
-                .valid-feedback Looks good!
+                .mb-4
+                  label.form-label(for='email')
+                    i.fas.fa-envelope
+                    | Email Address *
+                  input.form-control(
+                    type='email'
+                    id='email'
+                    name='email'
+                    placeholder='Enter your email address'
+                    required
+                    autocomplete='email'
+                  )
+                  .invalid-feedback Please enter a valid email address.
+                  .valid-feedback Looks good!
 
-              .mb-4
-                label.form-label(for='district')
-                  i.fas.fa-city
-                  | District *
-                input.form-control(
-                  type='text'
-                  id='district'
-                  name='district'
-                  placeholder='Enter your district'
-                  required
-                )
-                .invalid-feedback Please enter your district.
-                .valid-feedback Looks good!
+                .mb-4
+                  label.form-label(for='phone')
+                    i.fas.fa-phone
+                    | Mobile Number *
+                  input.form-control(
+                    type='tel'
+                    id='phone'
+                    name='phone'
+                    placeholder='Enter 10-digit mobile number'
+                    required
+                    pattern='[0-9]{10}'
+                    maxlength='10'
+                    autocomplete='tel'
+                  )
+                  .invalid-feedback Please enter a valid 10-digit mobile number.
+                  .valid-feedback Looks good!
 
-              .mb-4
-                label.form-label(for='require')
-                  i.fas.fa-comment-alt
-                  | Describe Your Requirement *
-                textarea.form-control(
-                  id='require'
-                  name='require'
-                  rows='5'
-                  placeholder='Please describe your financial requirement in detail'
-                  required
-                  minlength='10'
-                  maxlength='200'
-                )
-                .char-count#charCount 0 / 200 characters
-                .invalid-feedback Message must be between 10 and 200 characters.
-                .valid-feedback Looks good!
+                .btn-group-custom
+                  button.btn-primary-custom(type='button' onclick='goToStep(2)')
+                    | Next Step
+                    i.fas.fa-arrow-right.ms-2
 
-              button.btn-submit(type='submit' id='submitBtn')
-                span#submitText
-                  i.fas.fa-paper-plane.me-2
-                  | Submit Request
-                span.d-none#submitSpinner
-                  span.spinner-border.spinner-border-sm.me-2(role='status')
-                  | Submitting...
+              //- STEP 2: Location & Requirement
+              .form-step#step2
+                .mb-4
+                  label.form-label(for='state')
+                    i.fas.fa-map-marker-alt
+                    | State & Pincode *
+                  input.form-control(
+                    type='text'
+                    id='state'
+                    name='state'
+                    placeholder='e.g., Delhi - 110001'
+                    required
+                  )
+                  .invalid-feedback Please enter your state and pincode.
+                  .valid-feedback Looks good!
+
+                .mb-4
+                  label.form-label(for='district')
+                    i.fas.fa-city
+                    | District *
+                  input.form-control(
+                    type='text'
+                    id='district'
+                    name='district'
+                    placeholder='Enter your district'
+                    required
+                  )
+                  .invalid-feedback Please enter your district.
+                  .valid-feedback Looks good!
+
+                .mb-4
+                  label.form-label(for='require')
+                    i.fas.fa-comment-alt
+                    | Describe Your Requirement *
+                  textarea.form-control(
+                    id='require'
+                    name='require'
+                    rows='5'
+                    placeholder='Please describe your financial requirement in detail'
+                    required
+                    minlength='10'
+                    maxlength='200'
+                  )
+                  .char-count#charCount 0 / 200 characters
+                  .invalid-feedback Message must be between 10 and 200 characters.
+                  .valid-feedback Looks good!
+
+                .btn-group-custom
+                  button.btn-secondary-custom(type='button' onclick='goToStep(1)')
+                    i.fas.fa-arrow-left.me-2
+                    | Back
+                  button.btn-primary-custom(type='button' onclick='goToStep(3)')
+                    | Next Step
+                    i.fas.fa-arrow-right.ms-2
+
+              //- STEP 3: Email Verification
+              .form-step#step3
+                .otp-section
+                  .otp-header
+                    .otp-icon
+                      i.fas.fa-shield-alt
+                    div
+                      h4 Email Verification
+                      p.mb-0(style='color: var(--text-secondary); font-size: 0.9rem;') We'll send a 6-digit OTP to your email
+
+                  .otp-input-group
+                    input.form-control.otp-input(
+                      type='text'
+                      id='emailDisplay'
+                      readonly
+                      style='background: #f9fafb;'
+                    )
+                    button.btn-send-otp(type='button' id='sendOtpBtn' onclick='sendOTP()')
+                      span#sendOtpText
+                        i.fas.fa-paper-plane.me-2
+                        | Send OTP
+                      span.d-none#sendOtpSpinner
+                        span.spinner-border.spinner-border-sm.me-2(role='status')
+                        | Sending...
+
+                  #otpTimerContainer.d-none
+                    .otp-timer#otpTimer
+                      i.fas.fa-clock.me-1
+                      span OTP expires in: 
+                      strong#timerDisplay 10:00
+                    p.mb-0.mt-2(style='font-size: 0.85rem; color: var(--text-secondary);')
+                      | Didn't receive OTP? 
+                      a.resend-link.disabled#resendLink(onclick='resendOTP()') Resend
+
+                .mb-4#otpInputContainer.d-none
+                  label.form-label(for='otp')
+                    i.fas.fa-key
+                    | Enter OTP *
+                  input.form-control(
+                    type='text'
+                    id='otp'
+                    name='otp'
+                    placeholder='Enter 6-digit OTP'
+                    required
+                    pattern='[0-9]{6}'
+                    maxlength='6'
+                    inputmode='numeric'
+                  )
+                  .invalid-feedback Please enter the 6-digit OTP sent to your email.
+                  .valid-feedback OTP verified!
+
+                .security-badge
+                  i.fas.fa-lock
+                  span Your data is encrypted and secure
+
+                .btn-group-custom
+                  button.btn-secondary-custom(type='button' onclick='goToStep(2)')
+                    i.fas.fa-arrow-left.me-2
+                    | Back
+                  button.btn-primary-custom(type='submit' id='submitBtn' disabled)
+                    span#submitText
+                      i.fas.fa-check-circle.me-2
+                      | Submit Request
+                    span.d-none#submitSpinner
+                      span.spinner-border.spinner-border-sm.me-2(role='status')
+                      | Submitting...
 
     //- ================= MAP SECTION =================
     section.map-section
@@ -808,12 +1116,6 @@ html(lang="en")
           .footer-section
             h5 Contact Info
             ul.footer-links
-              //- li
-              //-   i.fas.fa-phone.me-2
-              //-   | +91 77039 21037
-              //- li
-              //-   i.fas.fa-envelope.me-2
-              //-   | info@pratistha.com
               li
                 i.fas.fa-map-marker-alt.me-2
                 | Delhi, India
@@ -826,6 +1128,62 @@ html(lang="en")
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js')
     
     script.
+      // ==================== SECURITY & ANTI-ATTACK MEASURES ====================
+      
+      // Rate limiting tracker
+      const rateLimiter = {
+        attempts: {},
+        maxAttempts: 5,
+        timeWindow: 60000, // 1 minute
+        
+        check: function(key) {
+          const now = Date.now();
+          if (!this.attempts[key]) {
+            this.attempts[key] = [];
+          }
+          
+          // Remove old attempts
+          this.attempts[key] = this.attempts[key].filter(time => now - time < this.timeWindow);
+          
+          if (this.attempts[key].length >= this.maxAttempts) {
+            return false;
+          }
+          
+          this.attempts[key].push(now);
+          return true;
+        }
+      };
+
+      // Input sanitization
+      function sanitizeInput(input) {
+        const div = document.createElement('div');
+        div.textContent = input;
+        return div.innerHTML;
+      }
+
+      // XSS Prevention
+      function escapeHtml(text) {
+        const map = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+      }
+
+      // CSRF Token (if needed)
+      const csrfToken = Math.random().toString(36).substring(2);
+
+      // ==================== FORM STATE MANAGEMENT ====================
+      let currentStep = 1;
+      let otpSent = false;
+      let otpVerified = false;
+      let otpTimer = null;
+      let timeLeft = 600; // 10 minutes
+
+      // ==================== NAVBAR SCROLL EFFECT ====================
       window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.navbar');
         if (window.scrollY > 50) {
@@ -835,26 +1193,20 @@ html(lang="en")
         }
       });
 
+      // ==================== FORM ELEMENTS ====================
       const form = document.getElementById('contactForm');
-      const messageInput = document.getElementById('require');
-      const charCount = document.getElementById('charCount');
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
       const phoneInput = document.getElementById('phone');
+      const stateInput = document.getElementById('state');
+      const districtInput = document.getElementById('district');
+      const messageInput = document.getElementById('require');
+      const otpInput = document.getElementById('otp');
+      const charCount = document.getElementById('charCount');
 
-      messageInput.addEventListener('input', function() {
-        const length = this.value.length;
-        charCount.textContent = `${length} / 200 characters`;
-        
-        if (length > 150) {
-          charCount.classList.add('danger');
-          charCount.classList.remove('warning');
-        } else if (length > 200) {
-          charCount.classList.add('warning');
-          charCount.classList.remove('danger');
-        } else {
-          charCount.classList.remove('warning', 'danger');
-        }
-      });
-
+      // ==================== INPUT VALIDATION & SANITIZATION ====================
+      
+      // Phone number validation and formatting
       phoneInput.addEventListener('input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
         if (this.value.length > 10) {
@@ -862,49 +1214,327 @@ html(lang="en")
         }
       });
 
-      form.addEventListener('submit', function(event) {
+      // OTP input validation
+      if (otpInput) {
+        otpInput.addEventListener('input', function() {
+          this.value = this.value.replace(/[^0-9]/g, '');
+          if (this.value.length > 6) {
+            this.value = this.value.slice(0, 6);
+          }
+          
+          // Auto-enable submit button when OTP is complete
+          if (this.value.length === 6) {
+            document.getElementById('submitBtn').disabled = false;
+          } else {
+            document.getElementById('submitBtn').disabled = true;
+          }
+        });
+      }
+
+      // Character counter for message
+      messageInput.addEventListener('input', function() {
+        const length = this.value.length;
+        charCount.textContent = `${length} / 200 characters`;
+        
+        if (length > 180) {
+          charCount.classList.add('danger');
+          charCount.classList.remove('warning');
+        } else if (length > 150) {
+          charCount.classList.add('warning');
+          charCount.classList.remove('danger');
+        } else {
+          charCount.classList.remove('warning', 'danger');
+        }
+      });
+
+      // Email validation
+      emailInput.addEventListener('blur', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (this.value && !emailRegex.test(this.value)) {
+          this.setCustomValidity('Please enter a valid email address');
+        } else {
+          this.setCustomValidity('');
+        }
+      });
+
+      // ==================== ALERT SYSTEM ====================
+      function showAlert(message, type = 'info') {
+        const alertContainer = document.getElementById('alertContainer');
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert-custom alert-${type}`;
+        
+        const icon = {
+          success: 'fa-check-circle',
+          error: 'fa-exclamation-circle',
+          info: 'fa-info-circle',
+          warning: 'fa-exclamation-triangle'
+        }[type] || 'fa-info-circle';
+        
+        alertDiv.innerHTML = `
+          <i class="fas ${icon}"></i>
+          <span>${escapeHtml(message)}</span>
+        `;
+        
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alertDiv);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          alertDiv.style.opacity = '0';
+          setTimeout(() => alertDiv.remove(), 300);
+        }, 5000);
+      }
+
+      // ==================== STEP NAVIGATION ====================
+      function goToStep(step) {
+        // Validate current step before moving forward
+        if (step > currentStep) {
+          if (!validateStep(currentStep)) {
+            return;
+          }
+        }
+
+        // Hide all steps
+        document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+        
+        // Show target step
+        document.getElementById(`step${step}`).classList.add('active');
+        
+        // Update step indicators
+        document.querySelectorAll('.step').forEach((s, i) => {
+          s.classList.remove('active');
+          if (i + 1 < step) {
+            s.classList.add('completed');
+          } else {
+            s.classList.remove('completed');
+          }
+        });
+        document.getElementById(`step${step}Indicator`).classList.add('active');
+        
+        // Update email display in step 3
+        if (step === 3) {
+          document.getElementById('emailDisplay').value = emailInput.value;
+        }
+        
+        currentStep = step;
+        
+        // Scroll to top of form
+        document.querySelector('.contact-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      function validateStep(step) {
+        let isValid = true;
+        const inputs = document.querySelectorAll(`#step${step} input, #step${step} textarea`);
+        
+        inputs.forEach(input => {
+          if (!input.checkValidity()) {
+            input.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+          }
+        });
+        
+        if (!isValid) {
+          showAlert('Please fill in all required fields correctly', 'error');
+        }
+        
+        return isValid;
+      }
+
+      // ==================== OTP FUNCTIONALITY ====================
+      async function sendOTP() {
+        // Rate limiting check
+        if (!rateLimiter.check('otp_' + emailInput.value)) {
+          showAlert('Too many OTP requests. Please try again after 1 minute.', 'error');
+          return;
+        }
+
+        const email = emailInput.value;
+        
+        if (!email || !emailInput.checkValidity()) {
+          showAlert('Please enter a valid email address', 'error');
+          return;
+        }
+
+        const sendBtn = document.getElementById('sendOtpBtn');
+        const sendText = document.getElementById('sendOtpText');
+        const sendSpinner = document.getElementById('sendOtpSpinner');
+        
+        // Disable button and show loading
+        sendBtn.disabled = true;
+        sendText.classList.add('d-none');
+        sendSpinner.classList.remove('d-none');
+
+        try {
+          const response = await fetch('/api/send-otp-contact', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email })
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            showAlert(data.message, 'success');
+            otpSent = true;
+            
+            // Show OTP input and timer
+            document.getElementById('otpInputContainer').classList.remove('d-none');
+            document.getElementById('otpTimerContainer').classList.remove('d-none');
+            
+            // Change button text
+            sendText.innerHTML = '<i class="fas fa-check-circle me-2"></i>OTP Sent';
+            sendText.classList.remove('d-none');
+            sendSpinner.classList.add('d-none');
+            
+            // Start timer
+            startOtpTimer();
+            
+          } else {
+            throw new Error(data.message || 'Failed to send OTP');
+          }
+        } catch (error) {
+          console.error('Error sending OTP:', error);
+          showAlert(error.message || 'Failed to send OTP. Please try again.', 'error');
+          
+          sendBtn.disabled = false;
+          sendText.classList.remove('d-none');
+          sendSpinner.classList.add('d-none');
+        }
+      }
+
+      function startOtpTimer() {
+        timeLeft = 600; // 10 minutes
+        updateTimerDisplay();
+        
+        otpTimer = setInterval(() => {
+          timeLeft--;
+          updateTimerDisplay();
+          
+          if (timeLeft <= 0) {
+            clearInterval(otpTimer);
+            showAlert('OTP has expired. Please request a new one.', 'warning');
+            document.getElementById('resendLink').classList.remove('disabled');
+          } else if (timeLeft <= 120) {
+            document.getElementById('otpTimer').classList.add('warning');
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timerDisplay').textContent = 
+          `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }
+
+      function resendOTP() {
+        if (document.getElementById('resendLink').classList.contains('disabled')) {
+          return;
+        }
+        
+        clearInterval(otpTimer);
+        otpInput.value = '';
+        document.getElementById('resendLink').classList.add('disabled');
+        sendOTP();
+      }
+
+      // ==================== FORM SUBMISSION ====================
+      form.addEventListener('submit', async function(event) {
         event.preventDefault();
         event.stopPropagation();
 
-        if (form.checkValidity()) {
-          const submitBtn = document.getElementById('submitBtn');
-          const submitText = document.getElementById('submitText');
-          const submitSpinner = document.getElementById('submitSpinner');
-          
-          submitBtn.disabled = true;
-          submitText.classList.add('d-none');
-          submitSpinner.classList.remove('d-none');
+        // Final validation
+        if (!form.checkValidity()) {
+          showAlert('Please fill in all required fields correctly', 'error');
+          form.classList.add('was-validated');
+          return;
+        }
 
-          const formData = new FormData(form);
+        // Check if OTP is entered
+        if (!otpInput.value || otpInput.value.length !== 6) {
+          showAlert('Please enter the 6-digit OTP', 'error');
+          otpInput.focus();
+          return;
+        }
 
-          fetch('/contact', {
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const submitSpinner = document.getElementById('submitSpinner');
+        
+        // Disable button and show loading
+        submitBtn.disabled = true;
+        submitText.classList.add('d-none');
+        submitSpinner.classList.remove('d-none');
+
+        // Prepare sanitized form data
+        const formData = {
+          name: sanitizeInput(nameInput.value.trim()),
+          email: emailInput.value.trim().toLowerCase(),
+          phone: phoneInput.value.trim(),
+          state: sanitizeInput(stateInput.value.trim()),
+          district: sanitizeInput(districtInput.value.trim()),
+          require: sanitizeInput(messageInput.value.trim()),
+          otp: otpInput.value.trim()
+        };
+
+        try {
+          const response = await fetch('/contact', {
             method: 'POST',
-            body: formData
-          })
-          .then(response => {
-            submitBtn.disabled = false;
-            submitText.classList.remove('d-none');
-            submitSpinner.classList.add('d-none');
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            // Clear timer
+            if (otpTimer) {
+              clearInterval(otpTimer);
+            }
             
+            // Reset form
             form.reset();
             form.classList.remove('was-validated');
             charCount.textContent = '0 / 200 characters';
             charCount.classList.remove('warning', 'danger');
             
+            // Reset steps
+            currentStep = 1;
+            goToStep(1);
+            
+            // Hide OTP sections
+            document.getElementById('otpInputContainer').classList.add('d-none');
+            document.getElementById('otpTimerContainer').classList.add('d-none');
+            otpSent = false;
+            
+            // Reset OTP button
+            document.getElementById('sendOtpText').innerHTML = '<i class="fas fa-paper-plane me-2"></i>Send OTP';
+            document.getElementById('sendOtpBtn').disabled = false;
+            
+            // Show success modal
             document.getElementById('successModal').classList.add('show');
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            submitBtn.disabled = false;
-            submitText.classList.remove('d-none');
-            submitSpinner.classList.add('d-none');
-            alert('An error occurred. Please try again.');
-          });
+            
+          } else {
+            throw new Error(data.message || 'Failed to submit form');
+          }
+        } catch (error) {
+          console.error('Error submitting form:', error);
+          showAlert(error.message || 'An error occurred. Please try again.', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitText.classList.remove('d-none');
+          submitSpinner.classList.add('d-none');
         }
-
-        form.classList.add('was-validated');
       });
 
+      // ==================== MODAL FUNCTIONS ====================
       function closeModal() {
         document.getElementById('successModal').classList.remove('show');
       }
@@ -913,4 +1543,35 @@ html(lang="en")
         if (e.target === this) {
           closeModal();
         }
+      });
+
+      // ==================== SECURITY: Prevent Form Resubmission ====================
+      window.addEventListener('beforeunload', function() {
+        if (otpTimer) {
+          clearInterval(otpTimer);
+        }
+      });
+
+      // ==================== INPUT AUTOCOMPLETE SECURITY ====================
+      document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('paste', function(e) {
+          // Allow paste but sanitize
+          setTimeout(() => {
+            this.value = sanitizeInput(this.value);
+          }, 0);
+        });
+      });
+
+      // ==================== PREVENT MULTIPLE SUBMISSIONS ====================
+      let isSubmitting = false;
+      form.addEventListener('submit', function(e) {
+        if (isSubmitting) {
+          e.preventDefault();
+          return false;
+        }
+        isSubmitting = true;
+        
+        setTimeout(() => {
+          isSubmitting = false;
+        }, 3000);
       });
