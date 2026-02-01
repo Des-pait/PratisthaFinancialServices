@@ -6,9 +6,8 @@ const bodyparser = require("body-parser");
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 
-const url = 'mongodb://127.0.0.1:27017/dk';
-const app = express();
-const port = 8000;
+// const app = express();
+// const port = 8000;
 
 // Store OTPs temporarily (in production, use Redis or database)
 const otpStore = new Map();
@@ -780,7 +779,8 @@ app.post('/apply', async (req, res) => {
 });
 
 // START THE SERVER
-app.listen(port, () => {
-  console.log(`\n🚀 Server started successfully!`);
-  console.log(`📍 Server running on: http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`\n🚀 Server started successfully!`);
+//   console.log(`📍 Server running on: http://localhost:${port}`);
+// });
+module.exports = app;
