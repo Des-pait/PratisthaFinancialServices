@@ -1,0 +1,916 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Pratistha Financial Services - Contact Us
+    
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css')
+    link(rel='preconnect' href='https://fonts.googleapis.com')
+    link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin)
+    link(href='https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600&display=swap' rel='stylesheet')
+    
+    style.
+      :root {
+        --primary-emerald: #059669;
+        --primary-dark: #047857;
+        --accent-gold: #f59e0b;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --bg-light: #f9fafb;
+        --gradient-start: #10b981;
+        --gradient-end: #059669;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        color: var(--text-primary);
+        overflow-x: hidden;
+        background: linear-gradient(180deg, #ffffff 0%, var(--bg-light) 100%);
+      }
+
+      h1, h2, h3, h4, h5 {
+        font-family: 'Playfair Display', serif;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.4rem;
+        letter-spacing: -0.5px;
+      }
+
+      .navbar-brand img {
+        border: 2px solid var(--accent-gold);
+        transition: transform 0.3s ease;
+      }
+
+      .navbar-brand:hover img {
+        transform: rotate(360deg) scale(1.1);
+      }
+
+      .nav-link {
+        position: relative;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: var(--accent-gold);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+      }
+
+      .nav-link:hover::after {
+        width: 80%;
+      }
+
+      /* Hero Section */
+      .hero-section {
+        background: linear-gradient(135deg, rgba(5, 150, 105, 0.95) 0%, rgba(4, 120, 87, 0.9) 100%);
+        padding: 160px 20px 100px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(245, 158, 11, 0.15) 0%, transparent 50%);
+        animation: pulse 8s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+      }
+
+      .hero-section h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-section p {
+        font-size: clamp(1rem, 2vw, 1.3rem);
+        max-width: 700px;
+        margin: 0 auto;
+        opacity: 0.95;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Contact Section */
+      .contact-container {
+        padding: 100px 0;
+      }
+
+      .contact-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* Contact Info */
+      .contact-info {
+        background: white;
+        padding: 50px 40px;
+        border-radius: 25px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+      }
+
+      .contact-info h2 {
+        font-size: 2.5rem;
+        color: var(--text-primary);
+        margin-bottom: 20px;
+      }
+
+      .contact-info p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 40px;
+      }
+
+      .info-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+      }
+
+      .info-item:hover {
+        transform: translateX(10px);
+        box-shadow: 0 5px 20px rgba(5, 150, 105, 0.2);
+      }
+
+      .info-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-right: 20px;
+        color: white;
+        font-size: 1.3rem;
+        box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
+      }
+
+      .info-content h4 {
+        font-size: 1.2rem;
+        color: var(--text-primary);
+        margin-bottom: 5px;
+      }
+
+      .info-content p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+      }
+
+      .social-link {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .social-link:hover {
+        transform: translateY(-5px) rotate(360deg);
+        box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
+        color: white;
+      }
+
+      /* Contact Form */
+      .contact-form {
+        background: white;
+        padding: 50px 40px;
+        border-radius: 25px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+      }
+
+      .contact-form h2 {
+        font-size: 2.2rem;
+        color: var(--text-primary);
+        margin-bottom: 30px;
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .form-label i {
+        margin-right: 8px;
+        color: var(--primary-emerald);
+      }
+
+      .form-control {
+        padding: 15px 20px;
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-emerald);
+        box-shadow: 0 0 0 0.2rem rgba(5, 150, 105, 0.15);
+        outline: none;
+      }
+
+      .form-control.is-valid {
+        border-color: var(--primary-emerald);
+      }
+
+      .form-control.is-invalid {
+        border-color: #ef4444;
+      }
+
+      .invalid-feedback,
+      .valid-feedback {
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+      }
+
+      .char-count {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        text-align: right;
+        margin-top: 0.25rem;
+      }
+
+      .char-count.warning {
+        color: #f59e0b;
+      }
+
+      .char-count.danger {
+        color: #ef4444;
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        color: white;
+        padding: 16px 50px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        margin-top: 20px;
+        cursor: pointer;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        color: white;
+      }
+
+      .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-width: 0.15em;
+      }
+
+      /* Map Section */
+      .map-section {
+        padding: 80px 0;
+        background: white;
+      }
+
+      .section-title {
+        font-size: clamp(2.5rem, 4vw, 3.5rem);
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+      }
+
+      .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-emerald));
+        border-radius: 2px;
+      }
+
+      .map-container {
+        max-width: 1200px;
+        margin: 40px auto 0;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+      }
+
+      .map-container iframe {
+        width: 100%;
+        height: 450px;
+        border: none;
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        color: white;
+        padding: 40px 0 20px;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 250px;
+      }
+
+      .footer-section h5 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--accent-gold);
+      }
+
+      .footer-links {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-links li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-links a {
+        color: #d1d5db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--accent-gold);
+      }
+
+      .copyright {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #9ca3af;
+      }
+
+      /* Success Modal */
+      .success-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .success-modal.show {
+        display: flex;
+      }
+
+      .modal-content-custom {
+        background: white;
+        padding: 50px;
+        border-radius: 25px;
+        text-align: center;
+        max-width: 500px;
+        margin: 20px;
+        animation: modalSlideIn 0.4s ease-out;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-50px) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .modal-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 2.5rem;
+        color: white;
+        box-shadow: 0 10px 30px rgba(5, 150, 105, 0.3);
+      }
+
+      .modal-content-custom h3 {
+        font-size: 2rem;
+        color: var(--text-primary);
+        margin-bottom: 15px;
+      }
+
+      .modal-content-custom p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        line-height: 1.7;
+      }
+
+      .btn-close-modal {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        color: white;
+        padding: 12px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-top: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-close-modal:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 992px) {
+        .contact-wrapper {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+
+        .contact-info,
+        .contact-form {
+          padding: 40px 30px;
+        }
+      }
+
+      @media (max-width: 770px) {
+        .hero-section {
+          padding: 140px 15px 80px;
+        }
+
+        .contact-container,
+        .map-section {
+          padding: 60px 0;
+        }
+
+        .contact-info,
+        .contact-form {
+          padding: 35px 25px;
+        }
+
+        .contact-info h2,
+        .contact-form h2 {
+          font-size: 2rem;
+        }
+
+        .info-item {
+          padding: 15px;
+        }
+
+        .map-container iframe {
+          height: 350px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .contact-info h2,
+        .contact-form h2 {
+          font-size: 1.8rem;
+        }
+
+        .info-icon {
+          width: 45px;
+          height: 45px;
+          font-size: 1.1rem;
+          margin-right: 15px;
+        }
+
+        .social-link {
+          width: 40px;
+          height: 40px;
+          font-size: 1rem;
+        }
+
+        .modal-content-custom {
+          padding: 35px 25px;
+        }
+
+        .modal-content-custom h3 {
+          font-size: 1.6rem;
+        }
+      }
+
+  body
+    //- ================= NAVBAR =================
+    nav.navbar.navbar-expand-lg.navbar-dark.fixed-top
+      .container
+        a.navbar-brand.d-flex.align-items-center(href='/')
+          img.rounded-circle(src='./img/nlogo.png' width='45' alt='Logo')
+          span.ms-2 Pratistha Financial Services
+
+        button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navMenu')
+          span.navbar-toggler-icon
+
+        #navMenu.collapse.navbar-collapse
+          ul.navbar-nav.ms-auto
+            li.nav-item
+              a.nav-link(href='/') Home
+            li.nav-item
+              a.nav-link(href='/services') Services
+            li.nav-item
+              a.nav-link(href='/about') About
+            li.nav-item
+              a.nav-link.active(href='/contact') Contact
+
+    //- ================= HERO SECTION =================
+    section.hero-section
+      .container
+        h1 Contact Us
+        p We're here to help you with all your financial needs. Get in touch with us today!
+
+    //- ================= CONTACT SECTION =================
+    section.contact-container
+      .container
+        .contact-wrapper
+          //- Contact Information
+          .contact-info
+            h2 Get In Touch
+            p We'd love to hear from you. Our team is ready to assist you with any questions or concerns you may have.
+
+            .info-item
+              .info-icon
+                i.fas.fa-map-marker-alt
+              .info-content
+                h4 Our Location
+                p Delhi, India
+                p All States Across India
+
+            //- .info-item
+            //-   .info-icon
+            //-     i.fas.fa-phone
+            //-   .info-content
+            //-     h4 Phone Number
+            //-     p +91 77039 21037
+            //-     p Mon-Sat: 9:00 AM - 6:00 PM
+
+            //- .info-item
+            //-   .info-icon
+            //-     i.fas.fa-envelope
+            //-   .info-content
+            //-     h4 Email Address
+            //-     p info@pratistha.com
+            //-     p support@pratistha.com
+
+            .info-item
+              .info-icon
+                i.fas.fa-clock
+              .info-content
+                h4 Working Hours
+                p Monday - Saturday
+                p 9:00 AM - 6:00 PM
+
+            //- .social-links
+            //-   a.social-link(href='#' aria-label='Facebook')
+            //-     i.fab.fa-facebook-f
+            //-   a.social-link(href='#' aria-label='Twitter')
+            //-     i.fab.fa-twitter
+            //-   a.social-link(href='#' aria-label='LinkedIn')
+            //-     i.fab.fa-linkedin-in
+            //-   a.social-link(href='#' aria-label='Instagram')
+            //-     i.fab.fa-instagram
+
+          //- Contact Form
+          .contact-form
+            h2 Send Us a Message
+            form#contactForm.needs-validation(action='/contact' method='post' novalidate)
+              .mb-4
+                label.form-label(for='name')
+                  i.fas.fa-user
+                  | Full Name *
+                input.form-control(
+                  type='text'
+                  id='name'
+                  name='name'
+                  placeholder='Enter your full name'
+                  required
+                  minlength='2'
+                  maxlength='50'
+                )
+                .invalid-feedback Please enter your name (2-50 characters).
+                .valid-feedback Looks good!
+
+              .mb-4
+                label.form-label(for='email')
+                  i.fas.fa-envelope
+                  | Email Address *
+                input.form-control(
+                  type='email'
+                  id='email'
+                  name='email'
+                  placeholder='Enter your email address'
+                  required
+                )
+                .invalid-feedback Please enter a valid email address.
+                .valid-feedback Looks good!
+
+              .mb-4
+                label.form-label(for='phone')
+                  i.fas.fa-phone
+                  | Mobile Number *
+                input.form-control(
+                  type='tel'
+                  id='phone'
+                  name='phone'
+                  placeholder='Enter 10-digit mobile number'
+                  required
+                  pattern='[0-9]{10}'
+                  maxlength='10'
+                )
+                .invalid-feedback Please enter a valid 10-digit mobile number.
+                .valid-feedback Looks good!
+
+              .mb-4
+                label.form-label(for='state')
+                  i.fas.fa-map-marker-alt
+                  | State & Pincode *
+                input.form-control(
+                  type='text'
+                  id='state'
+                  name='state'
+                  placeholder='e.g., Delhi - 110001'
+                  required
+                )
+                .invalid-feedback Please enter your state and pincode.
+                .valid-feedback Looks good!
+
+              .mb-4
+                label.form-label(for='district')
+                  i.fas.fa-city
+                  | District *
+                input.form-control(
+                  type='text'
+                  id='district'
+                  name='district'
+                  placeholder='Enter your district'
+                  required
+                )
+                .invalid-feedback Please enter your district.
+                .valid-feedback Looks good!
+
+              .mb-4
+                label.form-label(for='require')
+                  i.fas.fa-comment-alt
+                  | Describe Your Requirement *
+                textarea.form-control(
+                  id='require'
+                  name='require'
+                  rows='5'
+                  placeholder='Please describe your financial requirement in detail'
+                  required
+                  minlength='10'
+                  maxlength='200'
+                )
+                .char-count#charCount 0 / 200 characters
+                .invalid-feedback Message must be between 10 and 200 characters.
+                .valid-feedback Looks good!
+
+              button.btn-submit(type='submit' id='submitBtn')
+                span#submitText
+                  i.fas.fa-paper-plane.me-2
+                  | Submit Request
+                span.d-none#submitSpinner
+                  span.spinner-border.spinner-border-sm.me-2(role='status')
+                  | Submitting...
+
+    //- ================= MAP SECTION =================
+    section.map-section
+      .container
+        h2.section-title Our Location
+        .map-container
+          iframe(
+            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224346.48129098735!2d77.04417205!3d28.527252849999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sDelhi!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin'
+            allowfullscreen
+            loading='lazy'
+            referrerpolicy='no-referrer-when-downgrade'
+          )
+
+    //- ================= SUCCESS MODAL =================
+    .success-modal#successModal
+      .modal-content-custom
+        .modal-icon
+          i.fas.fa-check
+        h3 Thank You!
+        p Your response has been recorded successfully. We will contact you on your registered mobile number or email address shortly.
+        button.btn-close-modal(onclick='closeModal()') Close
+
+    //- ================= FOOTER =================
+    footer
+      .container
+        .footer-content
+          .footer-section
+            h5 Pratistha Financial Services
+            p(style='color: #d1d5db;') Your trusted partner for all financial solutions. We provide comprehensive loan services with complete transparency and support.
+
+          .footer-section
+            h5 Quick Links
+            ul.footer-links
+              li
+                a(href='/') Home
+              li
+                a(href='/services') Services
+              li
+                a(href='/about') About Us
+              li
+                a(href='/contact') Contact
+
+          .footer-section
+            h5 Contact Info
+            ul.footer-links
+              //- li
+              //-   i.fas.fa-phone.me-2
+              //-   | +91 77039 21037
+              //- li
+              //-   i.fas.fa-envelope.me-2
+              //-   | info@pratistha.com
+              li
+                i.fas.fa-map-marker-alt.me-2
+                | Delhi, India
+              li
+                i.fas.fa-clock.me-2
+                | Mon-Sat: 9AM - 6PM
+        .copyright
+          p © 2026 Pratistha Financial Services | Site Under Development
+
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js')
+    
+    script.
+      window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+          navbar.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.2)';
+        } else {
+          navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+        }
+      });
+
+      const form = document.getElementById('contactForm');
+      const messageInput = document.getElementById('require');
+      const charCount = document.getElementById('charCount');
+      const phoneInput = document.getElementById('phone');
+
+      messageInput.addEventListener('input', function() {
+        const length = this.value.length;
+        charCount.textContent = `${length} / 200 characters`;
+        
+        if (length > 150) {
+          charCount.classList.add('danger');
+          charCount.classList.remove('warning');
+        } else if (length > 200) {
+          charCount.classList.add('warning');
+          charCount.classList.remove('danger');
+        } else {
+          charCount.classList.remove('warning', 'danger');
+        }
+      });
+
+      phoneInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 10) {
+          this.value = this.value.slice(0, 10);
+        }
+      });
+
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (form.checkValidity()) {
+          const submitBtn = document.getElementById('submitBtn');
+          const submitText = document.getElementById('submitText');
+          const submitSpinner = document.getElementById('submitSpinner');
+          
+          submitBtn.disabled = true;
+          submitText.classList.add('d-none');
+          submitSpinner.classList.remove('d-none');
+
+          const formData = new FormData(form);
+
+          fetch('/contact', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => {
+            submitBtn.disabled = false;
+            submitText.classList.remove('d-none');
+            submitSpinner.classList.add('d-none');
+            
+            form.reset();
+            form.classList.remove('was-validated');
+            charCount.textContent = '0 / 200 characters';
+            charCount.classList.remove('warning', 'danger');
+            
+            document.getElementById('successModal').classList.add('show');
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            submitBtn.disabled = false;
+            submitText.classList.remove('d-none');
+            submitSpinner.classList.add('d-none');
+            alert('An error occurred. Please try again.');
+          });
+        }
+
+        form.classList.add('was-validated');
+      });
+
+      function closeModal() {
+        document.getElementById('successModal').classList.remove('show');
+      }
+
+      document.getElementById('successModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeModal();
+        }
+      });

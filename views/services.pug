@@ -1,0 +1,937 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    title Pratistha Financial Services - Our Services
+    
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css')
+    link(rel='preconnect' href='https://fonts.googleapis.com')
+    link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin)
+    link(href='https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600&display=swap' rel='stylesheet')
+    
+    style.
+      :root {
+        --primary-emerald: #059669;
+        --primary-dark: #047857;
+        --accent-gold: #f59e0b;
+        --accent-pink: #ec4899;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --bg-light: #f9fafb;
+        --gradient-start: #10b981;
+        --gradient-end: #059669;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Outfit', sans-serif;
+        color: var(--text-primary);
+        overflow-x: hidden;
+      }
+
+      h1, h2, h3, h4, h5 {
+        font-family: 'Playfair Display', serif;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.4rem;
+        letter-spacing: -0.5px;
+      }
+
+      .navbar-brand img {
+        border: 2px solid var(--accent-gold);
+        transition: transform 0.3s ease;
+      }
+
+      .navbar-brand:hover img {
+        transform: rotate(360deg) scale(1.1);
+      }
+
+      .nav-link {
+        position: relative;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: var(--accent-gold);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+      }
+
+      .nav-link:hover::after {
+        width: 80%;
+      }
+
+      /* Hero Section */
+      .hero-section {
+        background: linear-gradient(135deg, rgba(5, 150, 105, 0.95) 0%, rgba(4, 120, 87, 0.9) 100%);
+        padding: 140px 20px 80px;
+        text-align: center;
+        color: white;
+      }
+
+      .hero-section h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      }
+
+      .hero-section p {
+        font-size: clamp(1rem, 2vw, 1.3rem);
+        max-width: 800px;
+        margin: 0 auto;
+        opacity: 0.95;
+      }
+
+      /* EMI Calculator Section */
+      .emi-calculator-section {
+        padding: 80px 0;
+        background: linear-gradient(180deg, #ffffff 0%, var(--bg-light) 100%);
+      }
+
+      .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+        color: var(--text-primary);
+      }
+
+      .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-emerald));
+        border-radius: 2px;
+      }
+
+      .calculator-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .form-control {
+        padding: 15px 20px;
+        border-radius: 12px;
+        border: 2px solid #e5e7eb;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-emerald);
+        box-shadow: 0 0 0 0.2rem rgba(5, 150, 105, 0.15);
+      }
+
+      .btn-calculate {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .btn-calculate:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        color: white;
+      }
+
+      .emi-result {
+        margin-top: 30px;
+        padding: 25px;
+        background: linear-gradient(135deg, var(--primary-emerald), var(--primary-dark));
+        border-radius: 15px;
+        text-align: center;
+        color: white;
+        display: none;
+      }
+
+      .emi-result.show {
+        display: block;
+        animation: slideDown 0.4s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .emi-result h3 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        opacity: 0.9;
+      }
+
+      .emi-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 10px 0;
+      }
+
+      .amortization-table {
+        margin-top: 40px;
+        overflow-x: auto;
+      }
+
+      .table-responsive {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      #amortizationTable {
+        margin: 0;
+        width: 100%;
+      }
+
+      #amortizationTable thead {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+      }
+
+      #amortizationTable th {
+        padding: 15px 10px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      #amortizationTable td {
+        padding: 12px 10px;
+        text-align: center;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 0.9rem;
+      }
+
+      #amortizationTable tr:nth-child(even) {
+        background-color: #f9fafb;
+      }
+
+      #amortizationTable tr:hover {
+        background-color: #f0fdf4;
+      }
+
+      /* Loan Services Section */
+      .loan-services-section {
+        padding: 80px 0;
+        background: white;
+      }
+
+      .loan-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 40px;
+        border: 3px solid;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .loan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .loan-card.personal {
+        border-color: #ec4899;
+      }
+
+      .loan-card.home {
+        border-color: #3b82f6;
+      }
+
+      .loan-card.property {
+        border-color: #8b5cf6;
+      }
+
+      .loan-card.business {
+        border-color: #f59e0b;
+      }
+
+      .loan-card.auto {
+        border-color: #10b981;
+      }
+
+      .loan-card.machinery {
+        border-color: #ef4444;
+      }
+
+      .loan-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e5e7eb;
+      }
+
+      .loan-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+
+      .loan-card.personal .loan-icon {
+        background: linear-gradient(135deg, #ec4899, #db2777);
+        color: white;
+      }
+
+      .loan-card.home .loan-icon {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+      }
+
+      .loan-card.property .loan-icon {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        color: white;
+      }
+
+      .loan-card.business .loan-icon {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+      }
+
+      .loan-card.auto .loan-icon {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+      }
+
+      .loan-card.machinery .loan-icon {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+      }
+
+      .loan-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+      }
+
+      .loan-description {
+        font-size: 1.05rem;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 25px;
+        font-style: italic;
+      }
+
+      .loan-number {
+        display: inline-block;
+        background: var(--primary-emerald);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+      }
+
+      .doc-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .doc-list > li {
+        margin-bottom: 15px;
+        padding-left: 30px;
+        position: relative;
+        line-height: 1.7;
+        color: var(--text-secondary);
+      }
+
+      .doc-list > li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--primary-emerald);
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .doc-list ul {
+        list-style: none;
+        padding-left: 20px;
+        margin-top: 10px;
+      }
+
+      .doc-list ul li {
+        margin-bottom: 8px;
+        padding-left: 25px;
+        position: relative;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+      }
+
+      .doc-list ul li::before {
+        content: '★';
+        position: absolute;
+        left: 0;
+        color: var(--accent-gold);
+        font-size: 0.9rem;
+      }
+
+      .disclaimer {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        margin: 60px 0 40px;
+        border-left: 5px solid var(--accent-gold);
+      }
+
+      .disclaimer p {
+        font-style: italic;
+        color: var(--text-primary);
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      /* Contact Section */
+      .contact-section {
+        padding: 80px 0;
+        background: linear-gradient(135deg, var(--bg-light) 0%, white 100%);
+      }
+
+      .contact-form {
+        max-width: 700px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        color: white;
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        color: white;
+        padding: 40px 0 20px;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 250px;
+      }
+
+      .footer-section h5 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--accent-gold);
+      }
+
+      .footer-links {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-links li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-links a {
+        color: #d1d5db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--accent-gold);
+      }
+
+      .copyright {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #9ca3af;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 770px) {
+        .hero-section {
+          padding: 120px 15px 60px;
+        }
+
+        .emi-calculator-section,
+        .loan-services-section,
+        .contact-section {
+          padding: 60px 0;
+        }
+
+        .calculator-card,
+        .contact-form {
+          padding: 30px 20px;
+        }
+
+        .loan-card {
+          padding: 25px 20px;
+        }
+
+        .loan-header {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .loan-icon {
+          margin-right: 0;
+          margin-bottom: 15px;
+        }
+
+        .emi-amount {
+          font-size: 2rem;
+        }
+
+        #amortizationTable th,
+        #amortizationTable td {
+          padding: 8px 5px;
+          font-size: 0.85rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .section-title {
+          font-size: 1.8rem;
+        }
+
+        .loan-title {
+          font-size: 1.5rem;
+        }
+
+        .form-control {
+          padding: 12px 15px;
+        }
+
+        .btn-calculate,
+        .btn-submit {
+          padding: 12px 30px;
+        }
+
+        #amortizationTable {
+          font-size: 0.8rem;
+        }
+
+        #amortizationTable th,
+        #amortizationTable td {
+          padding: 6px 3px;
+        }
+      }
+
+  body
+    //- ================= NAVBAR =================
+    nav.navbar.navbar-expand-lg.navbar-dark.fixed-top
+      .container
+        a.navbar-brand.d-flex.align-items-center(href='/')
+          img.rounded-circle(src='img/nlogo.png' width='45' alt='Logo')
+          span.ms-2 Pratistha Financial Services
+
+        button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navMenu')
+          span.navbar-toggler-icon
+
+        #navMenu.collapse.navbar-collapse
+          ul.navbar-nav.ms-auto
+            li.nav-item
+              a.nav-link(href='/') Home
+            li.nav-item
+              a.nav-link.active(href='/services') Services
+            li.nav-item
+              a.nav-link(href='/about') About
+            li.nav-item
+              a.nav-link(href='/contact') Contact
+            //- li.nav-item
+            //-   a.nav-link.text-warning(href='/login')
+            //-     i.fas.fa-user.me-1
+            //-     | Login/Signup
+
+    //- ================= HERO SECTION =================
+    section.hero-section
+      .container
+        h1 Available Services
+        p Our financial services are available across all states in India for all clients in all segments as per client's convenience.
+
+    //- ================= EMI CALCULATOR =================
+    section.emi-calculator-section
+      .container
+        .text-center.mb-5
+          h2.section-title
+            i.fas.fa-calculator.me-2
+            | Loan EMI Calculator
+          p.text-muted.mt-3 Calculate your monthly EMI with detailed amortization schedule
+
+        .calculator-card
+          form#emiForm
+            .mb-4
+              label.form-label(for='principal')
+                i.fas.fa-rupee-sign.me-2
+                | Loan Amount
+              input.form-control(
+                type='number'
+                id='principal'
+                name='principal'
+                placeholder='Enter loan amount'
+                required
+                min='1000'
+                step='1000'
+              )
+
+            .mb-4
+              label.form-label(for='interest')
+                i.fas.fa-percent.me-2
+                | Interest Rate (% per year)
+              input.form-control(
+                type='number'
+                id='interest'
+                name='interest'
+                placeholder='Enter interest rate'
+                required
+                min='0.1'
+                step='0.1'
+              )
+
+            .mb-4
+              label.form-label(for='tenure')
+                i.fas.fa-calendar-alt.me-2
+                | Loan Tenure (in years)
+              input.form-control(
+                type='number'
+                id='tenure'
+                name='tenure'
+                placeholder='Enter loan tenure'
+                required
+                min='1'
+                max='30'
+              )
+
+            button.btn-calculate(type='submit')
+              i.fas.fa-calculator.me-2
+              | Calculate EMI
+
+          #result.emi-result
+            h3 Your Monthly EMI
+            .emi-amount
+              i.fas.fa-rupee-sign
+              span#emiAmount 0
+            p.mb-0 per month
+
+        .amortization-table
+          .table-responsive
+            table#amortizationTable.table.table-hover.mb-0
+              thead
+                tr
+                  th Month
+                  th Opening Balance
+                  th EMI
+                  th Interest
+                  th Principal
+                  th Closing Balance
+              tbody
+
+    //- ================= LOAN SERVICES =================
+    section.loan-services-section
+      .container
+        .text-center.mb-5
+          h2.section-title Basic Documentation for Loans
+          p.text-muted.mt-3 Required documents for different types of loans
+
+        //- Personal Loan
+        .loan-card.personal
+          .loan-header
+            .loan-icon
+              i.fas.fa-user
+            .loan-title Personal Loan
+          .loan-number 1. Personal Loan
+          p.loan-description A personal loan is a loan that does not require collateral or security and is offered with minimal documentation. You can use the funds from this loan for any legitimate financial need.
+          ul.doc-list
+            li Duly filled in application form & credit information
+            li For salaried - Income proof i.e. last 2 year's ITR/Form 16, latest 3 months salary slip
+            li Bank statement of last 12 months
+            li KYC documents of applicant and co-applicant/guarantor(if any):
+              ul
+                li Identity proof (PAN card/Voters ID/Passport/Aadhaar etc)
+                li Address proof (Driving license/Passport/Aadhaar etc)
+                li Office/business address proof
+                li Latest passport size two photographs
+
+        //- Home Loan
+        .loan-card.home
+          .loan-header
+            .loan-icon
+              i.fas.fa-home
+            .loan-title Home Loan
+          .loan-number 2. Home Loan
+          p.loan-description A home loan is an amount an individual borrows from a financial institution such as a housing finance company to buy a new or a resale home, construct a home or renovate or extend an existing one.
+          ul.doc-list
+            li Duly filled in application form & credit information
+            li KYC documents of applicant and co-applicant/guarantor(if any):
+              ul
+                li Identity proof (PAN card/Voters ID/Passport/Aadhaar etc)
+                li Address proof (Driving license/Passport/Aadhaar etc)
+                li Latest passport size two photographs
+            li For salaried - income proof i.e. last 2 year's ITR/Form 16, latest 3 salary slips
+            li For other than salaried - income proof i.e. last 3 year's ITR
+            li Bank statement of last 6 months
+            li Property documents (based on proposed property):
+              ul
+                li Agreement to sell/Allotment letter
+                li Copy of property ownership documents: Title deed/Original Sale Deed
+                li Advance payment receipts/own contribution receipts
+                li Copy of approved plan by local body
+                li NOC from Builder/Developer/Society
+                li Statutory and regulatory approval of construction
+            li Additional documents in case of Take-over from other Bank/FI
+            li Additional documents in case applicant/co-applicant is NRI
+
+        //- Loan Against Property
+        .loan-card.property
+          .loan-header
+            .loan-icon
+              i.fas.fa-building
+            .loan-title Loan Against Property
+          .loan-number 3. Loan Against Property
+          p.loan-description As the name says it all, loan against property is the loan you get from the bank against the mortgage of your property. This type of loan comes under the category of secured loan.
+          ul.doc-list
+            li Duly filled in application form & Credit information
+            li KYC documents of applicant and co-applicant/guarantor(if any)
+            li For salaried - Income proof i.e. last 2 year's ITR/Form 16, latest 3 salary slips
+            li For other than salaried - Income proof i.e. last 2 year's ITR
+            li Bank statement of last 6 months
+            li Property documents (based on proposed property)
+            li Additional documents in case of Take-over from other Bank/FI
+            li Additional documents in case applicant/co-applicant is NRI
+
+        //- Business Loan
+        .loan-card.business
+          .loan-header
+            .loan-icon
+              i.fas.fa-briefcase
+            .loan-title Business Loan
+          .loan-number 4. Business Loan
+          p.loan-description In simple terms, it involves borrowing against one of the company's assets, with the lender focusing on the quality of the collateral rather than the credit rating and prospects of the company.
+          ul.doc-list
+            li PAN Card For Company/Firm/Individual
+            li KYC documents of applicant and co-applicant/guarantor(if any)
+            li Last 2 Years ITR along with computation of Balance Sheet, income & Profit & Loss a/c for the last 2 yrs
+            li Proof of Business Continuation
+            li Sole Proprietorship Declaration, Certified true copy of Memorandum & Articles of Association
+            li Last 3 years audited financials
+
+        //- Auto Loan
+        .loan-card.auto
+          .loan-header
+            .loan-icon
+              i.fas.fa-car
+            .loan-title Auto Loan
+          .loan-number 5. Auto Loan
+          p.loan-description A Vehicle Loan is a loan that allows you to purchase two and four wheelers for personal use.
+          ul.doc-list
+            li KYC documents of applicant and co-applicant/guarantor(if any)
+            li Performa Invoice from authorised dealer of vehicle
+            li Advance/booking amount payment receipt
+            li For salaried - Income proof i.e. last 2 year's ITR/Form 16, latest 3 salary slips
+            li For other than salaried - Income proof i.e. last 2 year's ITR
+            li Bank statement of last 6 months
+            li Additional documents in case applicant/co-applicant is NRI
+            li Additional documents in case of Take-over from other Bank/FI
+
+        //- Machinery Loan
+        .loan-card.machinery
+          .loan-header
+            .loan-icon
+              i.fas.fa-cogs
+            .loan-title Machinery Loan
+          .loan-number 6. Machinery Loan
+          p.loan-description A machinery loan is a credit facility that helps you borrow funds to buy, lease, repair or upgrade machinery. It is a type of business loan that enables you to improve your productivity and efficiency.
+          ul.doc-list
+            li KYC documents of applicant and co-applicant/guarantor(if any)
+            li Business vintage and existence proofs
+            li Last 2 year's ITR & Last 1 year's bank statement
+            li Existing facility sanction letter
+            li Original and valid quotation of the machine(s) – To be purchased
+
+        .disclaimer
+          p
+            i.fas.fa-info-circle.me-2
+            | * Above documentation are just for reference, they may vary from corporation to corporation
+
+    //- ================= FOOTER =================
+    footer
+      .container
+        .footer-content
+          .footer-section
+            h5 Pratistha Financial Services
+            p(style='color: #d1d5db;') Your trusted partner for all financial solutions. We provide comprehensive loan services with complete transparency and support.
+
+          .footer-section
+            h5 Quick Links
+            ul.footer-links
+              li
+                a(href='/') Home
+              li
+                a(href='/services') Services
+              li
+                a(href='/about') About Us
+              li
+                a(href='/contact') Contact
+
+          .footer-section
+            h5 Contact Info
+            ul.footer-links
+              //- li
+              //-   i.fas.fa-phone.me-2
+              //-   | +91 77039 21037
+              //- li
+              //-   i.fas.fa-envelope.me-2
+              //-   | info@pratistha.com
+              li
+                i.fas.fa-map-marker-alt.me-2
+                | Delhi, India
+              li
+                i.fas.fa-clock.me-2
+                | Mon-Sat: 9AM - 6PM
+
+        .copyright
+          p © 2026 Pratistha Financial Services | Site Under Development
+
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js')
+    
+    script.
+      const form = document.getElementById('emiForm');
+      
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const principal = parseFloat(document.getElementById('principal').value);
+        const interestRate = parseFloat(document.getElementById('interest').value);
+        const tenure = parseInt(document.getElementById('tenure').value);
+        
+        const monthlyInterestRate = (interestRate / 100) / 12;
+        const totalNumberOfPayments = tenure * 12;
+        
+        const emi = (principal * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalNumberOfPayments)) / (Math.pow(1 + monthlyInterestRate, totalNumberOfPayments) - 1);
+        
+        const resultElement = document.getElementById('result');
+        const emiAmountElement = document.getElementById('emiAmount');
+        emiAmountElement.textContent = emi.toFixed(2);
+        resultElement.classList.add('show');
+        
+        const amortizationTable = document.getElementById('amortizationTable');
+        const tbody = amortizationTable.querySelector('tbody');
+        tbody.innerHTML = '';
+        
+        let remainingBalance = principal;
+        for (let i = 1; i <= totalNumberOfPayments; i++) {
+          const interest = remainingBalance * monthlyInterestRate;
+          const principalPaid = emi - interest;
+          const openingBalance = remainingBalance;
+          remainingBalance -= principalPaid;
+          
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${i}</td>
+            <td>₹${openingBalance.toFixed(2)}</td>
+            <td>₹${emi.toFixed(2)}</td>
+            <td>₹${interest.toFixed(2)}</td>
+            <td>₹${principalPaid.toFixed(2)}</td>
+            <td>₹${Math.max(0, remainingBalance).toFixed(2)}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+        
+        setTimeout(() => {
+          amortizationTable.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+      });
+      
+      window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+          navbar.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.2)';
+        } else {
+          navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+        }
+      });
