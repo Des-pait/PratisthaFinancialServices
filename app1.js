@@ -62,7 +62,7 @@ const sendOTPEmail = async (email, otp, type = 'contact') => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🔐 Email Verification</h1>
+              <h1>Email Verification</h1>
               <p style="margin: 5px 0 0 0; opacity: 0.9;">Pratistha Financial Services</p>
             </div>
             
@@ -80,7 +80,7 @@ const sendOTPEmail = async (email, otp, type = 'contact') => {
               </div>
 
               <div class="warning-box">
-                <strong>⚠️ Important:</strong>
+                <strong>Important:</strong>
                 <ul style="margin: 10px 0 0 0; padding-left: 20px;">
                   <li>This OTP is valid for <strong>10 minutes</strong></li>
                   <li>Do not share this code with anyone</li>
@@ -123,10 +123,10 @@ Thank you for choosing Pratistha Financial Services.
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ OTP email sent successfully:', info.messageId);
+    console.log('OTP email sent successfully:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('❌ Error sending OTP email:', error);
+    console.error('Error sending OTP email:', error);
     throw error;
   }
 };
@@ -170,7 +170,7 @@ const sendContactEmail = async (contactData) => {
             
             <div class="content">
               <div class="priority-high">
-                <strong>⚠️ Action Required:</strong> New contact inquiry received. Please respond within 24 hours.
+                <strong>Action Required:</strong> New contact inquiry received. Please respond within 24 hours.
               </div>
 
               <p style="margin-bottom: 20px;">
@@ -252,10 +252,10 @@ Submitted on: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Contact email sent successfully:', info.messageId);
+    console.log('Contact email sent successfully:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('❌ Error sending contact email:', error);
+    console.error('Error sending contact email:', error);
     throw error;
   }
 };
@@ -471,10 +471,10 @@ Submitted on: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Loan application email sent successfully:', info.messageId);
+    console.log('Loan application email sent successfully:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('❌ Error sending loan application email:', error);
+    console.error('Error sending loan application email:', error);
     throw error;
   }
 };
@@ -683,7 +683,7 @@ app.post('/contact', async (req, res) => {
       await sendContactEmail(contactData);
       console.log('📧 Contact form email sent successfully');
     } catch (emailError) {
-      console.error('⚠️ Email sending failed, but form verified:', emailError.message);
+      console.error('Email sending failed, but form verified:', emailError.message);
     }
 
     // Save to database (if you have mongoose model)
@@ -696,7 +696,7 @@ app.post('/contact', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Contact form error:', error);
+    console.error('Contact form error:', error);
     res.status(500).json({
       success: false,
       message: 'An error occurred while submitting your request. Please try again.'
@@ -757,7 +757,7 @@ app.post('/apply', async (req, res) => {
       await sendLoanApplicationEmail(applicationData);
       console.log('📧 Loan application email sent successfully');
     } catch (emailError) {
-      console.error('⚠️ Email sending failed, but form verified:', emailError.message);
+      console.error('Email sending failed, but form verified:', emailError.message);
     }
 
     // Save to database (if you have mongoose model)
@@ -771,7 +771,7 @@ app.post('/apply', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Loan application error:', error);
+    console.error('Loan application error:', error);
     res.status(500).json({
       success: false,
       message: 'An error occurred while submitting your application. Please try again.'
@@ -783,8 +783,4 @@ app.post('/apply', async (req, res) => {
 app.listen(port, () => {
   console.log(`\n🚀 Server started successfully!`);
   console.log(`📍 Server running on: http://localhost:${port}`);
-  console.log(`📧 Email notifications enabled: ${process.env.EMAIL_USER ? '✅ YES' : '❌ NO - Configure .env file'}`);
-  console.log(`📬 Business email: ${process.env.BUSINESS_EMAIL || process.env.EMAIL_USER || 'Not configured'}`);
-  console.log(`🔐 OTP verification enabled for both forms`);
-  console.log(`\n👉 Make sure to configure your .env file with Gmail credentials!\n`);
 });
