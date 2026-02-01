@@ -1,4 +1,12 @@
 {
+  "name": "pratistha-vercel-api",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.8",
+    "@upstash/redis": "^1.31.1"
+  },
+  
   "name": "myserver",
   "version": "1.0.0",
   "description": "ecom",
