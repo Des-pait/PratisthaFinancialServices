@@ -3,14 +3,15 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title Pratistha Financial Services
+    title Pratistha Business & Finance Solutions
     
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet")
-    
+    link(href='./style.css' rel='stylesheet')
+  
     style.
       :root {
         --primary-emerald: #059669;
@@ -38,55 +39,7 @@ html(lang="en")
       h1, h2, h3, h4, h5 {
         font-family: 'Playfair Display', serif;
       }
-
-      .navbar {
-        background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-      }
-
-      .navbar.scrolled {
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      }
-
-      .navbar-brand {
-        font-weight: 700;
-        font-size: 1.4rem;
-        letter-spacing: -0.5px;
-      }
-
-      .navbar-brand img {
-        border: 2px solid var(--accent-gold);
-        transition: transform 0.3s ease;
-      }
-
-      .navbar-brand:hover img {
-        transform: rotate(360deg) scale(1.1);
-      }
-
-      .nav-link {
-        position: relative;
-        font-weight: 500;
-        transition: all 0.3s ease;
-      }
-
-      .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 50%;
-        width: 0;
-        height: 2px;
-        background: var(--accent-gold);
-        transition: all 0.3s ease;
-        transform: translateX(-50%);
-      }
-
-      .nav-link:hover::after {
-        width: 80%;
-      }
-
+      
       .hero {
         background: linear-gradient(135deg, rgba(5, 150, 105, 0.95) 0%, rgba(4, 120, 87, 0.9) 100%), url('./img/bd.jpg') center/cover no-repeat;
         padding: 180px 20px 120px;
@@ -454,7 +407,97 @@ html(lang="en")
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         color: #9ca3af;
       }
+      /* Values Section */
+      .values-section {
+        padding: 100px 0;
+        background: linear-gradient(180deg, #ffffff 0%, var(--bg-light) 100%);
+      }
 
+      .section-title {
+        font-size: clamp(2.5rem, 4vw, 3.5rem);
+        margin-bottom: 3rem;
+        text-align: center;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+      }
+
+      .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-gold), var(--primary-emerald));
+        border-radius: 2px;
+      }
+
+      .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-top: 50px;
+      }
+
+      .value-card {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .value-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary-emerald), var(--accent-gold));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(5, 150, 105, 0.15);
+      }
+
+      .value-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .value-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        font-size: 2rem;
+        color: white;
+        box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+      }
+
+      .value-card h3 {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin-bottom: 15px;
+      }
+
+      .value-card p {
+        color: var(--text-secondary);
+        line-height: 1.7;
+        font-size: 1rem;
+      }
       @media (max-width: 770px) {
         .hero {
           padding: 140px 15px 80px;
@@ -522,6 +565,9 @@ html(lang="en")
         .btn-modern {
           width: 100%;
         }
+        .value-card {
+          padding: 30px 20px;
+        }
       }
 
       .fade-in {
@@ -551,10 +597,12 @@ html(lang="en")
       .container
         a.navbar-brand.d-flex.align-items-center(href="/")
           img.rounded-circle(src="./img/nlogo.png" width="45" alt="Logo")
-          span.ms-2 Pratistha Financial Services
-
-        button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navMenu")
+          span.ms-2 Pratistha Business & Finance Solutions
+        button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navMenu')
           span.navbar-toggler-icon
+        button.navbar-arrow-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="Toggle navigation")
+          i.fa-solid.fa-chevron-down
+
 
         #navMenu.collapse.navbar-collapse
           ul.navbar-nav.ms-auto
@@ -575,7 +623,7 @@ html(lang="en")
     section.hero
       .container
         .hero-overlay.text-center
-          h1.fw-bold Pratistha Financial Services
+          h1.fw-bold Pratistha Business & Finance Solutions
           p.lead
             | We assure complete cooperation to fulfill your financial needs.
           .d-flex.justify-content-center.gap-3.mt-4.flex-wrap
@@ -587,40 +635,48 @@ html(lang="en")
               | EMI Calculator
 
     //- ================= FEATURES =================
-    section.features-section
+    //- ================= VALUES SECTION =================
+    section.values-section
       .container
-        h2.text-center.section-title Why Choose Us
-        .row.g-4
-          .col-md-6.col-lg-4
-            .feature-card.fade-in
-              .feature-icon-wrapper
-                img.feature-icon(src="./img/cop.jpg" alt="100% Cooperation")
-              h5 100% Cooperation
-          .col-md-6.col-lg-4
-            .feature-card.fade-in(style="animation-delay: 0.1s;")
-              .feature-icon-wrapper
-                img.feature-icon(src="./img/time.jpg" alt="Fast Processing")
-              h5 Fast Processing
-          .col-md-6.col-lg-4
-            .feature-card.fade-in(style="animation-delay: 0.2s;")
-              .feature-icon-wrapper
-                img.feature-icon(src="./img/max.jpg" alt="Maximum Amount")
-              h5 Maximum Amount
-          .col-md-6.col-lg-4
-            .feature-card.fade-in(style="animation-delay: 0.3s;")
-              .feature-icon-wrapper
-                img.feature-icon(src="./img/intrest.jpg" alt="Minimum Interest")
-              h5 Minimum Interest
-          .col-md-6.col-lg-4
-            .feature-card.fade-in(style="animation-delay: 0.4s;")
-              .feature-icon-wrapper
-                img.feature-icon(src="./img/repay.jpg" alt="Flexible Repayment")
-              h5 Flexible Repayment
-          .col-md-6.col-lg-4
-            .feature-card.fade-in(style="animation-delay: 0.5s;")
-              .feature-icon-wrapper
-                img.feature-icon(src="./img/suces.jpg" alt="Sure Success")
-              h5 Sure Success
+        h2.section-title Our Core Values
+
+        .values-grid
+          .value-card
+            .value-icon
+              i.fas.fa-shield-alt
+            h3 Trust & Transparency
+            p We maintain complete transparency in all our dealings, ensuring you're informed at every step of the process.
+
+          .value-card
+            .value-icon
+              i.fas.fa-clock
+            h3 Quick Processing
+            p Time is valuable. We ensure fast loan processing and disbursal without compromising on quality.
+
+          .value-card
+            .value-icon
+              i.fas.fa-users
+            h3 Customer First
+            p Your satisfaction is our priority. We provide personalized solutions tailored to your unique needs.
+
+          .value-card
+            .value-icon
+              i.fas.fa-handshake
+            h3 Expert Guidance
+            p Our experienced team guides you through every step, making complex financial processes simple.
+
+          .value-card
+            .value-icon
+              i.fas.fa-percentage
+            h3 Competitive Rates
+            p We negotiate the best possible interest rates on your behalf, maximizing your savings.
+
+          .value-card
+            .value-icon
+              i.fas.fa-headset
+            h3 24/7 Support
+            p Our dedicated support team is always available to assist you with your queries and concerns.
+
 
     //- ================= USER REVIEWS =================
     section.reviews-section
@@ -703,7 +759,7 @@ html(lang="en")
       .container
         .footer-content
           .footer-section
-            h5 Pratistha Financial Services
+            h5 Pratistha Business & Finance Solutions
             p(style="color: #d1d5db;")
               | Your trusted partner for all financial solutions. We provide comprehensive loan services with complete transparency and support.
             //- .social-icons.mt-3
@@ -748,7 +804,7 @@ html(lang="en")
         
         .copyright
           p
-            | © 2026 Pratistha Financial Services | Site Under Development 
+            | © 2026 Pratistha Business & Finance Solutions | Site Under Development 
             //- a(href="/privacy" style="color: #9ca3af; text-decoration: none;") Privacy Policy
             //- |  | 
             //- a(href="/terms" style="color: #9ca3af; text-decoration: none;") Terms & Conditions

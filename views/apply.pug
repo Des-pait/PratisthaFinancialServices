@@ -4,13 +4,14 @@ html(lang="en")
     meta(charset='UTF-8')
     meta(http-equiv='X-UA-Compatible' content='IE=edge')
     meta(name='viewport' content='width=device-width, initial-scale=1.0')
-    title Pratistha Financial Services - Apply for Loan
+    title Pratistha Business & Finance Solutions - Apply for Loan
     
     link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css')
     link(rel='preconnect' href='https://fonts.googleapis.com')
     link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin)
     link(href='https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;600&display=swap' rel='stylesheet')
+    link(href='./style.css' rel='stylesheet')
     
     style.
       :root {
@@ -39,51 +40,6 @@ html(lang="en")
 
       h1, h2, h3, h4, h5 {
         font-family: 'Playfair Display', serif;
-      }
-
-      /* Navbar Styles */
-      .navbar {
-        background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-      }
-
-      .navbar-brand {
-        font-weight: 700;
-        font-size: 1.4rem;
-        letter-spacing: -0.5px;
-      }
-
-      .navbar-brand img {
-        border: 2px solid var(--accent-gold);
-        transition: transform 0.3s ease;
-      }
-
-      .navbar-brand:hover img {
-        transform: rotate(360deg) scale(1.1);
-      }
-
-      .nav-link {
-        position: relative;
-        font-weight: 500;
-        transition: all 0.3s ease;
-      }
-
-      .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 50%;
-        width: 0;
-        height: 2px;
-        background: var(--accent-gold);
-        transition: all 0.3s ease;
-        transform: translateX(-50%);
-      }
-
-      .nav-link:hover::after {
-        width: 80%;
       }
 
       /* Hero Section */
@@ -324,6 +280,167 @@ html(lang="en")
       .valid-feedback {
         font-size: 0.875rem;
         margin-top: 0.5rem;
+      }
+
+      /* OTP Section Styles */
+      .otp-section {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        padding: 30px;
+        border-radius: 15px;
+        margin-top: 30px;
+        border: 2px solid var(--primary-emerald);
+      }
+
+      .otp-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .otp-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--primary-emerald);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin-right: 15px;
+      }
+
+      .otp-header-text h4 {
+        margin: 0;
+        color: var(--text-primary);
+        font-size: 1.3rem;
+      }
+
+      .otp-header-text p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .otp-input-group {
+        display: flex;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .otp-input-wrapper {
+        flex: 1;
+      }
+
+      #otpInput {
+        letter-spacing: 8px;
+        font-size: 1.3rem;
+        font-weight: 600;
+        text-align: center;
+        font-family: monospace;
+      }
+
+      .btn-send-otp,
+      .btn-verify-otp {
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .btn-send-otp {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+      }
+
+      .btn-send-otp:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
+      }
+
+      .btn-send-otp:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .btn-verify-otp {
+        background: var(--accent-gold);
+        color: white;
+      }
+
+      .btn-verify-otp:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+      }
+
+      .otp-timer {
+        margin-top: 15px;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .otp-timer.expired {
+        color: #ef4444;
+      }
+
+      .otp-status {
+        margin-top: 15px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 600;
+        animation: slideDown 0.3s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .otp-status.success {
+        background: #d1fae5;
+        color: #047857;
+        border: 2px solid #10b981;
+      }
+
+      .otp-status.error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 2px solid #ef4444;
+      }
+
+      .otp-status.info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 2px solid #3b82f6;
+      }
+
+      .email-verified-badge {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-top: 15px;
+        box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);
+      }
+
+      .email-verified-badge i {
+        margin-right: 8px;
+        font-size: 1.1rem;
       }
 
       /* Buttons */
@@ -577,6 +694,15 @@ html(lang="en")
         .btn-submit {
           width: 100%;
         }
+
+        .otp-input-group {
+          flex-direction: column;
+        }
+
+        .btn-send-otp,
+        .btn-verify-otp {
+          width: 100%;
+        }
       }
 
       @media (max-width: 576px) {
@@ -599,6 +725,10 @@ html(lang="en")
         .modal-content-custom h3 {
           font-size: 1.6rem;
         }
+
+        .otp-section {
+          padding: 20px;
+        }
       }
 
   body
@@ -607,10 +737,12 @@ html(lang="en")
       .container
         a.navbar-brand.d-flex.align-items-center(href='/')
           img.rounded-circle(src='./img/nlogo.png' width='45' alt='Logo')
-          span.ms-2 Pratistha Financial Services
+          span.ms-2 Pratistha Business & Finance Solutions
 
         button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navMenu')
           span.navbar-toggler-icon
+        button.navbar-arrow-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="Toggle navigation")
+          i.fa-solid.fa-chevron-down
 
         #navMenu.collapse.navbar-collapse
           ul.navbar-nav.ms-auto
@@ -622,6 +754,7 @@ html(lang="en")
               a.nav-link(href='/about') About
             li.nav-item
               a.nav-link(href='/contact') Contact
+
     //- ================= HERO SECTION =================
     section.hero-section
       .container
@@ -636,7 +769,7 @@ html(lang="en")
           .progress-container
             .progress-steps
               .progress-line
-                .progress-line-fill#progressFill(style='width: 33.33%')
+                .progress-line-fill#progressFill(style='width: 25%')
               .step.active#step1Circle
                 .step-circle 1
                 .step-label Personal Info
@@ -646,15 +779,18 @@ html(lang="en")
               .step#step3Circle
                 .step-circle 3
                 .step-label Contact Info
+              .step#step4Circle
+                .step-circle 4
+                .step-label Verify Email
 
           //- Form Container
           .form-container
             .logo-header
-              img(src='img/nlogo.png' alt='Pratistha Financial Services Logo')
+              img(src='img/nlogo.png' alt='Pratistha Business & Finance Solutions Logo')
               h2 Loan Application
               p Fill out the form and we will contact you soon
 
-            form#loanApplicationForm.needs-validation(action='/apply' method='post' novalidate)
+            form#loanApplicationForm.needs-validation(novalidate)
               //- ========== STEP 1: Personal Information ==========
               .form-step.active#step1
                 h3.step-title
@@ -779,7 +915,7 @@ html(lang="en")
                       option(value='' selected disabled) Select loan type
                       option(value='personal loan') Personal Loan
                       option(value='loan against property (LAP)') Loan Against Property (LAP)
-                      option(value='bussiness loan') Business Loan
+                      option(value='Business loan') Business Loan
                       option(value='auto loan') Auto Loan
                       option(value='home loan') Home Loan
                       option(value='mortgage loan') Mortgage Loan
@@ -798,7 +934,6 @@ html(lang="en")
                       placeholder='Enter monthly income'
                       required
                       min='10000'
-                      step='1000'
                     )
                     .invalid-feedback Please enter your monthly income (minimum ₹10,000).
                     .valid-feedback Looks good!
@@ -814,7 +949,6 @@ html(lang="en")
                       placeholder='Enter loan amount'
                       required
                       min='30000'
-                      step='10000'
                     )
                     .invalid-feedback Please enter loan amount (minimum ₹30,000).
                     .valid-feedback Looks good!
@@ -894,14 +1028,91 @@ html(lang="en")
                       label.form-check-label(for='terms')
                         | I agree to the 
                         a(href='#') terms and conditions
-                        |  and authorize Pratistha Financial Services to contact me.
+                        |  and authorize Pratistha Business & Finance Solutions to contact me.
                       .invalid-feedback You must agree before submitting.
 
                 .form-navigation
                   button.btn-prev(type='button' onclick='prevStep()')
                     i.fas.fa-arrow-left.me-2
                     | Previous
-                  button.btn-submit(type='submit' id='submitBtn')
+                  button.btn-next(type='button' onclick='nextStep()')
+                    | Next: Verify Email
+                    i.fas.fa-arrow-right.ms-2
+
+              //- ========== STEP 4: Email Verification ==========
+              .form-step#step4
+                h3.step-title
+                  i.fas.fa-shield-alt.me-2
+                  | Verify Your Email
+
+                .info-card
+                  i.fas.fa-info-circle
+                  p For security purposes, we need to verify your email address. Click "Send OTP" to receive a verification code.
+
+                //- OTP Section
+                .otp-section#otpSection
+                  .otp-header
+                    .otp-icon
+                      i.fas.fa-envelope
+                    .otp-header-text
+                      h4 Email Verification Required
+                      p We'll send a 6-digit code to 
+                        strong#displayEmail your-email@example.com
+
+                  //- Send OTP Button
+                  #sendOtpContainer
+                    button.btn-send-otp.w-100(type='button' onclick='sendOTP()')
+                      span#sendOtpText
+                        i.fas.fa-paper-plane.me-2
+                        | Send Verification Code
+                      span.d-none#sendOtpSpinner
+                        span.spinner-border.spinner-border-sm.me-2(role='status')
+                        | Sending...
+
+                  //- OTP Input Section (Hidden initially)
+                  #otpInputContainer.d-none.mt-4
+                    .otp-input-group
+                      .otp-input-wrapper
+                        label.form-label(for='otpInput')
+                          i.fas.fa-key
+                          | Enter Verification Code
+                        input.form-control(
+                          type='text'
+                          id='otpInput'
+                          placeholder='000000'
+                          maxlength='6'
+                          pattern='[0-9]{6}'
+                        )
+                      button.btn-verify-otp(type='button' onclick='verifyOTP()')
+                        span#verifyOtpText
+                          i.fas.fa-check-circle.me-2
+                          | Verify
+                        span.d-none#verifyOtpSpinner
+                          span.spinner-border.spinner-border-sm.me-2(role='status')
+                          | Verifying...
+
+                    //- OTP Timer
+                    #otpTimer.otp-timer
+
+                    //- Resend OTP Link
+                    #resendOtpContainer.text-center.mt-3.d-none
+                      p Didn't receive the code?
+                      button.btn.btn-link(type='button' onclick='sendOTP()') Resend OTP
+
+                  //- Status Messages
+                  #otpStatus
+
+                  //- Email Verified Badge (Hidden initially)
+                  #verifiedBadge.d-none.text-center
+                    .email-verified-badge
+                      i.fas.fa-check-circle
+                      | Email Verified Successfully!
+
+                .form-navigation
+                  button.btn-prev(type='button' onclick='prevStep()')
+                    i.fas.fa-arrow-left.me-2
+                    | Previous
+                  button.btn-submit(type='button' id='submitBtn' onclick='submitApplication()' disabled)
                     span#submitText
                       i.fas.fa-paper-plane.me-2
                       | Submit Application
@@ -926,7 +1137,7 @@ html(lang="en")
       .container
         .footer-content
           .footer-section
-            h5 Pratistha Financial Services
+            h5 Pratistha Business & Finance Solutions
             p(style='color: #d1d5db;') Your trusted partner for all financial solutions. We provide comprehensive loan services with complete transparency and support.
 
           .footer-section
@@ -946,27 +1157,27 @@ html(lang="en")
           .footer-section
             h5 Contact Info
             ul.footer-links
-              //- li
-              //-   i.fas.fa-phone.me-2
-              //-   | +91 XXXXX XXXXX
-              //- li
-              //-   i.fas.fa-envelope.me-2
-              //-   | info@pratistha.com
               li
                 i.fas.fa-map-marker-alt.me-2
                 | Delhi, India
               li
                 i.fas.fa-clock.me-2
                 | Mon-Sat: 9AM - 6PM
+
         .copyright
-          p © 2026 Pratistha Financial Services | Site Under Development
+          p © 2026 Pratistha Business & Finance Solutions | Site Under Development
 
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js')
     
     script.
       let currentStep = 1;
-      const totalSteps = 3;
+      const totalSteps = 4;
+      let otpSent = false;
+      let emailVerified = false;
+      let otpTimer = null;
+      let timeRemaining = 600; // 10 minutes in seconds
 
+      // Navbar scroll effect
       window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.navbar');
         if (window.scrollY > 50) {
@@ -976,6 +1187,12 @@ html(lang="en")
         }
       });
 
+      // Update displayed email when email field changes
+      document.getElementById('email').addEventListener('input', function() {
+        document.getElementById('displayEmail').textContent = this.value || 'your-email@example.com';
+      });
+
+      // Step navigation
       function nextStep() {
         const currentStepElement = document.getElementById(`step${currentStep}`);
         const inputs = currentStepElement.querySelectorAll('input, select');
@@ -1007,6 +1224,12 @@ html(lang="en")
           
           updateProgressBar();
           window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          // Update display email when reaching step 4
+          if (currentStep === 4) {
+            const email = document.getElementById('email').value;
+            document.getElementById('displayEmail').textContent = email;
+          }
         }
       }
 
@@ -1030,6 +1253,7 @@ html(lang="en")
         document.getElementById('progressFill').style.width = progress + '%';
       }
 
+      // Phone input validation
       const phoneInput = document.getElementById('phone');
       phoneInput.addEventListener('input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -1038,56 +1262,213 @@ html(lang="en")
         }
       });
 
-      const form = document.getElementById('loanApplicationForm');
-      form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (form.checkValidity()) {
-          const submitBtn = document.getElementById('submitBtn');
-          const submitText = document.getElementById('submitText');
-          const submitSpinner = document.getElementById('submitSpinner');
-          
-          submitBtn.disabled = true;
-          submitText.classList.add('d-none');
-          submitSpinner.classList.remove('d-none');
-
-          const formData = new FormData(form);
-
-          fetch('/apply', {
-            method: 'POST',
-            body: formData
-          })
-          .then(response => {
-            submitBtn.disabled = false;
-            submitText.classList.remove('d-none');
-            submitSpinner.classList.add('d-none');
-            
-            document.getElementById('successModal').classList.add('show');
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            submitBtn.disabled = false;
-            submitText.classList.remove('d-none');
-            submitSpinner.classList.add('d-none');
-            alert('An error occurred. Please try again.');
-          });
+      // OTP input validation
+      const otpInput = document.getElementById('otpInput');
+      otpInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 6) {
+          this.value = this.value.slice(0, 6);
         }
-
-        form.classList.add('was-validated');
       });
 
+      // Show status message
+      function showStatus(message, type) {
+        const statusDiv = document.getElementById('otpStatus');
+        statusDiv.innerHTML = `<div class="otp-status ${type}">${message}</div>`;
+        setTimeout(() => {
+          statusDiv.innerHTML = '';
+        }, 5000);
+      }
+
+      // Start OTP timer
+      function startOtpTimer() {
+        timeRemaining = 600; // Reset to 10 minutes
+        const timerDiv = document.getElementById('otpTimer');
+        
+        clearInterval(otpTimer);
+        otpTimer = setInterval(() => {
+          timeRemaining--;
+          
+          const minutes = Math.floor(timeRemaining / 60);
+          const seconds = timeRemaining % 60;
+          
+          if (timeRemaining > 0) {
+            timerDiv.innerHTML = `<i class="fas fa-clock me-2"></i>Code expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            timerDiv.classList.remove('expired');
+          } else {
+            timerDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Code expired! Please request a new one.';
+            timerDiv.classList.add('expired');
+            document.getElementById('resendOtpContainer').classList.remove('d-none');
+            clearInterval(otpTimer);
+          }
+        }, 1000);
+      }
+
+      // Send OTP
+      async function sendOTP() {
+        const email = document.getElementById('email').value;
+        
+        if (!email) {
+          showStatus('Please enter your email address first', 'error');
+          return;
+        }
+
+        const sendBtn = document.querySelector('.btn-send-otp');
+        const sendText = document.getElementById('sendOtpText');
+        const sendSpinner = document.getElementById('sendOtpSpinner');
+        
+        sendBtn.disabled = true;
+        sendText.classList.add('d-none');
+        sendSpinner.classList.remove('d-none');
+
+        try {
+          const response = await fetch('/api/send-otp-apply', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            otpSent = true;
+            document.getElementById('sendOtpContainer').classList.add('d-none');
+            document.getElementById('otpInputContainer').classList.remove('d-none');
+            showStatus('Verification code sent to your email! Please check your inbox.', 'success');
+            startOtpTimer();
+          } else {
+            showStatus(data.message || 'Failed to send verification code. Please try again.', 'error');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          showStatus('Network error. Please check your connection and try again.', 'error');
+        } finally {
+          sendBtn.disabled = false;
+          sendText.classList.remove('d-none');
+          sendSpinner.classList.add('d-none');
+        }
+      }
+
+      // Verify OTP
+      async function verifyOTP() {
+        const email = document.getElementById('email').value;
+        const otp = document.getElementById('otpInput').value;
+
+        if (!otp || otp.length !== 6) {
+          showStatus('Please enter the 6-digit verification code', 'error');
+          return;
+        }
+
+        const verifyBtn = document.querySelector('.btn-verify-otp');
+        const verifyText = document.getElementById('verifyOtpText');
+        const verifySpinner = document.getElementById('verifyOtpSpinner');
+        
+        verifyBtn.disabled = true;
+        verifyText.classList.add('d-none');
+        verifySpinner.classList.remove('d-none');
+
+        try {
+          // For verification, we'll just store the OTP and verify during final submission
+          // This is a temporary verification for UI purposes
+          emailVerified = true;
+          
+          clearInterval(otpTimer);
+          document.getElementById('otpInputContainer').classList.add('d-none');
+          document.getElementById('otpTimer').classList.add('d-none');
+          document.getElementById('verifiedBadge').classList.remove('d-none');
+          document.getElementById('submitBtn').disabled = false;
+          
+          showStatus('Email verified successfully! You can now submit your application.', 'success');
+          
+        } catch (error) {
+          console.error('Error:', error);
+          showStatus('Verification failed. Please try again.', 'error');
+        } finally {
+          verifyBtn.disabled = false;
+          verifyText.classList.remove('d-none');
+          verifySpinner.classList.add('d-none');
+        }
+      }
+
+      // Submit application
+      async function submitApplication() {
+        if (!emailVerified) {
+          showStatus('Please verify your email before submitting', 'error');
+          return;
+        }
+
+        const form = document.getElementById('loanApplicationForm');
+        if (!form.checkValidity()) {
+          showStatus('Please fill all required fields correctly', 'error');
+          return;
+        }
+
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const submitSpinner = document.getElementById('submitSpinner');
+        
+        submitBtn.disabled = true;
+        submitText.classList.add('d-none');
+        submitSpinner.classList.remove('d-none');
+
+        const formData = {
+          name: document.getElementById('name').value,
+          age: document.getElementById('age').value,
+          employement: document.getElementById('employment').value,
+          position: document.getElementById('position').value,
+          state: document.getElementById('state').value,
+          district: document.getElementById('district').value,
+          loan: document.getElementById('loan').value,
+          income: document.getElementById('income').value,
+          loan_amount: document.getElementById('loan_amount').value,
+          tenure: document.getElementById('tenure').value,
+          phone: document.getElementById('phone').value,
+          email: document.getElementById('email').value,
+          otp: document.getElementById('otpInput').value
+        };
+
+        try {
+          const response = await fetch('/apply', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            document.getElementById('successModal').classList.add('show');
+          } else {
+            showStatus(data.message || 'Submission failed. Please try again.', 'error');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          showStatus('Network error. Please try again.', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitText.classList.remove('d-none');
+          submitSpinner.classList.add('d-none');
+        }
+      }
+
+      // Close modal
       function closeModal() {
         document.getElementById('successModal').classList.remove('show');
         window.location.href = '/';
       }
 
+      // Click outside modal to close
       document.getElementById('successModal').addEventListener('click', function(e) {
         if (e.target === this) {
           closeModal();
         }
       });
 
+      // Form validation on input
       const inputs = document.querySelectorAll('input, select');
       inputs.forEach(input => {
         input.addEventListener('input', function() {
