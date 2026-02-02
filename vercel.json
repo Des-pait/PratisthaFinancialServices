@@ -1,8 +1,18 @@
 {
+  "version": 2,
   "functions": {
-    "api/app1.js": {
-      "memory": 1024,
-      "maxDuration": 10
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1.js"
+    },
+    {
+      "src": "/",
+      "dest": "/api/render.js"
+    }
+  ]
 }
