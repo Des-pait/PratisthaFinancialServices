@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/**/*.js",
+      "src": "api/app1.js",
       "use": "@vercel/node"
     }
   ],
@@ -15,5 +15,8 @@
       "src": "/",
       "dest": "/api/render"
     }
-  ]
+  ],
+  "env": {
+      "NODE_ENV": "production"
+    }
 }
