@@ -1,13 +1,57 @@
-const express = require("express");
-const path = require("path");
-const fs = require("fs");
-var mongoose = require("mongoose");
-const bodyparser = require("body-parser");
-const nodemailer = require("nodemailer");
-require('dotenv').config();
+import express from 'express';
+import path from 'path';
+import nodemailer from 'nodemailer';
+import { addLoanClient } from './googlesheet.js';
+import { addContactClient } from './contactSheet.js';
+import { fileURLToPath } from 'url';
+import crypto from "crypto";
+
+import 'dotenv/config';
 
 const app = express();
 const port = process.env.PORT || 8000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ====================================================================================
+// SECURITY: Input Validation & Sanitization
+// ====================================================================================
+const sanitizeInput = (input) => {
+  if (typeof input !== 'string') return '';
+  // Remove potential XSS and SQL injection patterns
+  return input
+    .trim()
+    .replace(/[<>]/g, '') // Remove HTML tags
+    .replace(/['";]/g, '') // Remove quotes and semicolons
+    .substring(0, 500); // Limit length
+};
+
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const isValidPhone = (phone) => {
+  // Indian phone number validation (10 digits starting with 6-9)
+  const phoneRegex = /^[6-9]\d{9}$/;
+  return phoneRegex.test(phone.replace(/\s+/g, ''));
+};
+
+const isValidAge = (age) => {
+  const ageNum = parseInt(age);
+  return !isNaN(ageNum) && ageNum >= 18 && ageNum <= 100;
+};
+
+const isValidAmount = (amount) => {
+  const amountNum = parseFloat(amount);
+  return !isNaN(amountNum) && amountNum > 0 && amountNum <= 10000000000;
+};
+
+const isValidTenure = (tenure) => {
+  const tenureNum = parseInt(tenure);
+  return !isNaN(tenureNum) && tenureNum >= 1 && tenureNum <= 30;
+};
 
 // ====================================================================================
 // CONCURRENT REQUEST HANDLING - OTP Store with automatic cleanup
@@ -15,38 +59,60 @@ const port = process.env.PORT || 8000;
 class OTPStore {
   constructor() {
     this.store = new Map();
+    this.maxAttempts = 5; // Maximum verification attempts
     this.cleanupInterval = null;
     this.startAutoCleanup();
   }
 
-  // Set OTP with automatic expiry
   set(email, data) {
-    this.store.set(email, {
+    // Normalize email (lowercase, trimmed)
+    const normalizedEmail = email.toLowerCase().trim();
+
+    this.store.set(normalizedEmail, {
       ...data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      attempts: 0 // Track failed attempts
     });
   }
 
-  // Get OTP data
   get(email) {
-    const data = this.store.get(email);
+    const normalizedEmail = email.toLowerCase().trim();
+    const data = this.store.get(normalizedEmail);
+
     if (!data) return null;
 
     // Check if expired
     if (Date.now() > data.expiryTime) {
-      this.delete(email);
+      this.delete(normalizedEmail);
+      return null;
+    }
+
+    // Check if too many failed attempts
+    if (data.attempts >= this.maxAttempts) {
+      this.delete(normalizedEmail);
       return null;
     }
 
     return data;
   }
 
-  // Delete OTP
-  delete(email) {
-    return this.store.delete(email);
+  incrementAttempts(email) {
+    const normalizedEmail = email.toLowerCase().trim();
+    const data = this.store.get(normalizedEmail);
+
+    if (data) {
+      data.attempts = (data.attempts || 0) + 1;
+      this.store.set(normalizedEmail, data);
+      return data.attempts;
+    }
+    return 0;
   }
 
-  // Clean up expired OTPs every 5 minutes
+  delete(email) {
+    const normalizedEmail = email.toLowerCase().trim();
+    return this.store.delete(normalizedEmail);
+  }
+
   startAutoCleanup() {
     this.cleanupInterval = setInterval(() => {
       const now = Date.now();
@@ -62,17 +128,15 @@ class OTPStore {
       if (cleaned > 0) {
         console.log(`🧹 Cleaned up ${cleaned} expired OTPs`);
       }
-    }, 5 * 60 * 1000); // Every 5 minutes
+    }, 5 * 60 * 1000);
   }
 
-  // Stop cleanup (for graceful shutdown)
   stopAutoCleanup() {
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);
     }
   }
 
-  // Get store statistics
   getStats() {
     const now = Date.now();
     let active = 0;
@@ -96,7 +160,7 @@ const otpStore = new OTPStore();
 // EMAIL QUEUE - For handling concurrent email requests
 // ====================================================================================
 class EmailQueue {
-  constructor(concurrency = 5) {
+  constructor(concurrency = 3) {
     this.queue = [];
     this.processing = 0;
     this.concurrency = concurrency;
@@ -107,7 +171,6 @@ class EmailQueue {
     };
   }
 
-  // Add email to queue
   async add(emailFunction, priority = 'normal') {
     return new Promise((resolve, reject) => {
       const task = {
@@ -115,7 +178,10 @@ class EmailQueue {
         priority,
         resolve,
         reject,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        timeout: setTimeout(() => {
+          reject(new Error('Email task timeout'));
+        }, 30000) // 30 second timeout
       };
 
       if (priority === 'high') {
@@ -129,7 +195,6 @@ class EmailQueue {
     });
   }
 
-  // Process queue
   async process() {
     if (this.processing >= this.concurrency || this.queue.length === 0) {
       return;
@@ -140,20 +205,22 @@ class EmailQueue {
 
     try {
       const result = await task.emailFunction();
+      clearTimeout(task.timeout);
       this.stats.sent++;
       this.stats.queued--;
       task.resolve(result);
     } catch (error) {
+      clearTimeout(task.timeout);
       this.stats.failed++;
       this.stats.queued--;
+      console.error('Email sending failed:', error);
       task.reject(error);
     } finally {
       this.processing--;
-      this.process(); // Process next item
+      this.process();
     }
   }
 
-  // Get queue statistics
   getStats() {
     return {
       ...this.stats,
@@ -163,7 +230,7 @@ class EmailQueue {
   }
 }
 
-const emailQueue = new EmailQueue(5); // Process up to 5 emails concurrently
+const emailQueue = new EmailQueue(3);
 
 // ====================================================================================
 // EMAIL CONFIGURATION - Singleton transporter with connection pooling
@@ -178,13 +245,13 @@ const getEmailTransporter = () => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
-
-      // Pooling & throttling (good for OTP systems)
       pool: true,
-      maxConnections: 5,
+      maxConnections: 3,
       maxMessages: 10,
       rateDelta: 1000,
-      rateLimit: 5,
+      rateLimit: 3,
+      connectionTimeout: 10000,
+      greetingTimeout: 5000,
     });
 
     emailTransporter.verify((error, success) => {
@@ -203,43 +270,52 @@ const getEmailTransporter = () => {
 // UTILITY FUNCTIONS
 // ====================================================================================
 
-// Generate 6-digit OTP
+// SECURITY: Generate cryptographically secure OTP
 const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  // Use crypto for secure random generation
+  const buffer = crypto.randomBytes(3);
+  const otp = parseInt(buffer.toString('hex'), 16) % 900000 + 100000;
+  return otp.toString();
 };
 
-// Validate email format
-const isValidEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-// Rate limiting helper (simple in-memory implementation)
+// ====================================================================================
+// SECURITY: Enhanced Rate Limiting
+// ====================================================================================
 class RateLimiter {
-  constructor(maxRequests = 10, windowMs = 60000) {
+  constructor(maxRequests = 3, windowMs = 60000) {
     this.requests = new Map();
+    this.blockedIPs = new Map(); // Track blocked IPs
     this.maxRequests = maxRequests;
     this.windowMs = windowMs;
+    this.blockDuration = 5 * 60 * 1000; // 5 minutes block
   }
 
   isAllowed(identifier) {
+    // Check if blocked
+    const blocked = this.blockedIPs.get(identifier);
+    if (blocked && Date.now() < blocked) {
+      return false;
+    } else if (blocked) {
+      this.blockedIPs.delete(identifier);
+    }
+
     const now = Date.now();
     const userRequests = this.requests.get(identifier) || [];
 
-    // Filter out old requests
     const recentRequests = userRequests.filter(
       timestamp => now - timestamp < this.windowMs
     );
 
     if (recentRequests.length >= this.maxRequests) {
+      // Block this identifier
+      this.blockedIPs.set(identifier, now + this.blockDuration);
       return false;
     }
 
     recentRequests.push(now);
     this.requests.set(identifier, recentRequests);
 
-    // Cleanup old entries periodically
-    if (Math.random() < 0.01) {
+    if (Math.random() < 0.1) {
       this.cleanup();
     }
 
@@ -248,6 +324,7 @@ class RateLimiter {
 
   cleanup() {
     const now = Date.now();
+
     for (const [identifier, timestamps] of this.requests.entries()) {
       const recent = timestamps.filter(
         timestamp => now - timestamp < this.windowMs
@@ -258,10 +335,16 @@ class RateLimiter {
         this.requests.set(identifier, recent);
       }
     }
+
+    for (const [ip, blockUntil] of this.blockedIPs.entries()) {
+      if (now >= blockUntil) {
+        this.blockedIPs.delete(ip);
+      }
+    }
   }
 }
 
-const otpRateLimiter = new RateLimiter(5, 60000); // 5 OTP requests per minute per email
+const otpRateLimiter = new RateLimiter(3, 60000); // 3 OTP per minute
 
 // ====================================================================================
 // EMAIL SENDING FUNCTIONS (Optimized for queue)
@@ -272,13 +355,15 @@ const sendOTPEmail = async (email, otp, type = 'contact') => {
   const formType = type === 'contact' ? 'Contact Form' : 'Loan Application';
 
   const mailOptions = {
-    from: `"Pratistha Financial Services" <${process.env.EMAIL_USER}>`,
+    from: `"Pratistha Business & Finance Solutions" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: `Email Verification - ${formType} - OTP: ${otp}`,
+    subject: `Email Verification - ${formType}`,
     html: `
       <!DOCTYPE html>
       <html>
         <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; margin: 0; padding: 0; }
             .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
@@ -286,30 +371,26 @@ const sendOTPEmail = async (email, otp, type = 'contact') => {
             .header h1 { margin: 0; font-size: 24px; }
             .content { padding: 40px 30px; }
             .otp-box { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 3px solid #059669; padding: 30px; text-align: center; border-radius: 15px; margin: 30px 0; }
-            .otp-code { font-size: 42px; font-weight: bold; color: #047857; letter-spacing: 8px; font-family: monospace; margin: 10px 0; }
+            .otp-code { font-size: 12px; font-weight: bold; color: #047857; letter-spacing: 8px; font-family: monospace; margin: 10px 0; }
             .warning-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 5px; }
             .footer { background: #1f2937; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px; }
-            .info-text { color: #6b7280; font-size: 14px; line-height: 1.8; }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
               <h1>Email Verification</h1>
-              <p style="margin: 5px 0 0 0; opacity: 0.9;">Pratistha Financial Services</p>
+              <p style="margin: 5px 0 0 0; opacity: 0.9;">Pratistha Business & Finance Solutions</p>
             </div>
             
             <div class="content">
               <h2 style="color: #059669; margin-top: 0;">Verify Your Email Address</h2>
               
-              <p class="info-text">
-                Thank you for submitting the <strong>${formType}</strong>. To complete your submission, please verify your email address using the OTP below.
-              </p>
+              <p>Thank you for submitting the <strong>${formType}</strong>. Please verify your email using the OTP below.</p>
 
               <div class="otp-box">
                 <p style="margin: 0 0 10px 0; color: #047857; font-weight: 600;">Your Verification Code</p>
                 <div class="otp-code">${otp}</div>
-                <p style="margin: 10px 0 0 0; color: #6b7280; font-size: 13px;">Enter this code to verify your email</p>
               </div>
 
               <div class="warning-box">
@@ -317,56 +398,34 @@ const sendOTPEmail = async (email, otp, type = 'contact') => {
                 <ul style="margin: 10px 0 0 0; padding-left: 20px;">
                   <li>This OTP is valid for <strong>10 minutes</strong></li>
                   <li>Do not share this code with anyone</li>
-                  <li>If you didn't request this, please ignore this email</li>
+                  <li>Maximum 5 verification attempts allowed</li>
                 </ul>
               </div>
-
-              <p class="info-text">
-                After verification, we will process your ${type === 'contact' ? 'inquiry' : 'loan application'} and contact you within 24-48 hours.
-              </p>
-
-              <p class="info-text" style="margin-top: 30px;">
-                <strong>Need help?</strong> Contact us at ${process.env.BUSINESS_EMAIL || process.env.EMAIL_USER}
-              </p>
             </div>
             
             <div class="footer">
-              <p style="margin: 0;">This email was sent from Pratistha Financial Services.</p>
-              <p style="margin: 5px 0 0 0;">© ${new Date().getFullYear()} Pratistha Financial Services. All rights reserved.</p>
+              <p style="margin: 0;">© ${new Date().getFullYear()} Pratistha Business & Finance Solutions. All rights reserved.</p>
             </div>
           </div>
         </body>
       </html>
     `,
-    text: `
-Email Verification - Pratistha Financial Services
-
-Your OTP Code: ${otp}
-
-Please enter this code to verify your email address and complete your ${formType} submission.
-
-Important:
-- This OTP is valid for 10 minutes
-- Do not share this code with anyone
-- If you didn't request this, please ignore this email
-
-Thank you for choosing Pratistha Financial Services.
-    `
+    text: `Email Verification - Pratistha Business & Finance Solutions\n\nYour OTP Code: ${otp}\n\nThis OTP is valid for 10 minutes. Do not share this code with anyone.`
   };
 
   const info = await transporter.sendMail(mailOptions);
-  console.log(`✅ OTP email sent to ${email}:`, info.messageId);
+  console.log(`✅ OTP email sent to ${email.substring(0, 3)}***`);
   return { success: true, messageId: info.messageId };
 };
 
 const sendContactEmail = async (contactData) => {
   const transporter = getEmailTransporter();
+  const businessEmail = process.env.BUSINESS_EMAIL || process.env.EMAIL_USER;
 
   const mailOptions = {
-    from: `"Pratistha Financial Services" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER, // Send to business email
-    cc: contactData.email, // Copy to customer
-    subject: `New Contact Request - ${contactData.name}`,
+    from: `"Pratistha Business & Finance Solutions" <${process.env.EMAIL_USER}>`,
+    to: contactData.email,
+    subject: `Contact Request Received - ${contactData.name}`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -393,7 +452,7 @@ const sendContactEmail = async (contactData) => {
           <div class="container">
             <div class="header">
               <h1>📧 New Contact Form Submission</h1>
-              <p style="margin: 5px 0 0 0; opacity: 0.9;">Pratistha Financial Services</p>
+              <p style="margin: 5px 0 0 0; opacity: 0.9;">Pratistha Business & Finance Solutions</p>
             </div>
             
             <div class="content">
@@ -453,8 +512,8 @@ const sendContactEmail = async (contactData) => {
             </div>
             
             <div class="footer">
-              <p style="margin: 0;">This email was sent from the Pratistha Financial Services contact form.</p>
-              <p style="margin: 5px 0 0 0;">© ${new Date().getFullYear()} Pratistha Financial Services. All rights reserved.</p>
+              <p style="margin: 0;">This email was sent from the Pratistha Business & Finance Solutions contact form.</p>
+              <p style="margin: 5px 0 0 0;">© ${new Date().getFullYear()} Pratistha Business & Finance Solutions. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -462,14 +521,16 @@ const sendContactEmail = async (contactData) => {
     `
   };
 
+  const contactId = `CT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const info = await transporter.sendMail(mailOptions);
-  console.log(`✅ Contact email sent:`, info.messageId);
+  await addContactClient(contactData, contactId)
+    .catch(err => console.error('❌ Contact sheet error:', err));
+
   return { success: true, messageId: info.messageId };
 };
 
 const sendLoanApplicationEmail = async (applicationData) => {
   const transporter = getEmailTransporter();
-
   const calculateEMI = (principal, tenure) => {
     const rate = 10;
     const monthlyRate = rate / 12 / 100;
@@ -484,10 +545,9 @@ const sendLoanApplicationEmail = async (applicationData) => {
     : 'N/A';
 
   const mailOptions = {
-    from: `"Pratistha Financial Services" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER, // Send to business email
-    cc: applicationData.email, // Copy to customer
-    subject: `New Loan Application - ${applicationData.loan || 'Loan'} - ${applicationData.name}`,
+    from: `"Pratistha Business & Finance Solutions" <${process.env.EMAIL_USER}>`,
+    to: applicationData.email,
+    subject: `Your Loan Application - ${applicationData.loan || 'Loan'} - ${applicationData.name}`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -496,19 +556,19 @@ const sendLoanApplicationEmail = async (applicationData) => {
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f4f4f4; margin: 0; padding: 0; }
             .container { max-width: 700px; margin: 20px auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
             .header { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 30px; text-align: center; }
-            .header h1 { margin: 0; font-size: 26px; }
+            .header h1 { margin: 0; font-size: 24px; }
             .content { padding: 30px; }
             .alert-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 25px; border-radius: 5px; }
             .section { background: #f9fafb; border-left: 4px solid #059669; padding: 20px; margin: 20px 0; border-radius: 5px; }
-            .section h3 { color: #059669; margin: 0 0 15px 0; font-size: 18px; }
+            .section h3 { color: #059669; margin: 0 0 15px 0; font-size: 12px; }
             .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
             .info-item { padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
             .info-label { font-weight: bold; color: #059669; font-size: 13px; display: block; margin-bottom: 5px; }
-            .info-value { color: #1f2937; font-size: 15px; }
+            .info-value { color: #1f2937; font-size: 12px; }
             .highlight-box { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 2px solid #059669; padding: 20px; border-radius: 8px; margin: 20px 0; }
             .loan-details { display: flex; justify-content: space-around; text-align: center; }
             .loan-detail-item { flex: 1; }
-            .loan-detail-value { font-size: 24px; font-weight: bold; color: #059669; display: block; }
+            .loan-detail-value { font-size: 14px; font-weight: bold; color: #059669; display: block; }
             .loan-detail-label { font-size: 12px; color: #6b7280; display: block; margin-top: 5px; }
             .footer { background: #1f2937; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px; }
             .verified-badge { background: #10b981; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; margin-bottom: 20px; }
@@ -521,8 +581,8 @@ const sendLoanApplicationEmail = async (applicationData) => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>💰 New Loan Application Received</h1>
-              <p>Pratistha Financial Services</p>
+              <h1>💰 We Have Received Your Loan Application</h1>
+              <p>Pratistha Business & Finance Solutions</p>
             </div>
             
             <div class="content">
@@ -631,8 +691,8 @@ const sendLoanApplicationEmail = async (applicationData) => {
             </div>
             
             <div class="footer">
-              <p style="margin: 0;">This email was sent from the Pratistha Financial Services loan application system.</p>
-              <p style="margin: 5px 0 0 0;">© ${new Date().getFullYear()} Pratistha Financial Services. All rights reserved.</p>
+              <p style="margin: 0;">This email was sent from the Pratistha Business & Finance Solutions loan application system.</p>
+              <p style="margin: 5px 0 0 0;">© ${new Date().getFullYear()} Pratistha Business & Finance Solutions. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -640,8 +700,11 @@ const sendLoanApplicationEmail = async (applicationData) => {
     `
   };
 
+  const applicationId = `LA-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const info = await transporter.sendMail(mailOptions);
-  console.log(`✅ Loan application email sent:`, info.messageId);
+  await addLoanClient(applicationData, applicationId)
+    .catch(err => console.error('❌ Loan sheet error:', err));
+
   return { success: true, messageId: info.messageId };
 };
 
@@ -669,8 +732,11 @@ app.use(express.static('views', {
 }));
 
 app.use('/static', express.static('static'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+
+// SECURITY: Add body size limits
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.json({ limit: '10kb' }));
+
 app.use('/uploads', express.static('uploads'));
 
 app.set('view engine', 'pug');
@@ -725,11 +791,11 @@ app.post('/api/send-otp-contact', async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Validation
-    if (!email) {
+    // SECURITY: Comprehensive validation
+    if (!email || typeof email !== 'string') {
       return res.status(400).json({
         success: false,
-        message: 'Email is required'
+        message: 'Valid email is required'
       });
     }
 
@@ -740,8 +806,11 @@ app.post('/api/send-otp-contact', async (req, res) => {
       });
     }
 
-    // Rate limiting
-    if (!otpRateLimiter.isAllowed(email)) {
+    // SECURITY: Rate limiting with IP blocking
+    const clientIP = req.ip || req.connection.remoteAddress;
+    const rateLimitKey = `${clientIP}-${email}`;
+
+    if (!otpRateLimiter.isAllowed(rateLimitKey)) {
       return res.status(429).json({
         success: false,
         message: 'Too many OTP requests. Please try again after 1 minute.'
@@ -749,16 +818,14 @@ app.post('/api/send-otp-contact', async (req, res) => {
     }
 
     const otp = generateOTP();
-    const expiryTime = Date.now() + 10 * 60 * 1000; // 10 minutes
+    const expiryTime = Date.now() + 10 * 60 * 1000;
 
-    // Store OTP
     otpStore.set(email, {
       otp,
       expiryTime,
       type: 'contact'
     });
 
-    // Queue email sending (non-blocking)
     emailQueue.add(
       () => sendOTPEmail(email, otp, 'contact'),
       'high'
@@ -766,9 +833,8 @@ app.post('/api/send-otp-contact', async (req, res) => {
       console.error('❌ Failed to queue OTP email:', error);
     });
 
-    console.log(`📧 OTP queued for ${email}: ${otp}`);
+    console.log(`📧 OTP queued for contact form`);
 
-    // Respond immediately
     res.status(200).json({
       success: true,
       message: 'OTP sent successfully to your email'
@@ -788,10 +854,10 @@ app.post('/api/send-otp-apply', async (req, res) => {
   try {
     const { email } = req.body;
 
-    if (!email) {
+    if (!email || typeof email !== 'string') {
       return res.status(400).json({
         success: false,
-        message: 'Email is required'
+        message: 'Valid email is required'
       });
     }
 
@@ -802,7 +868,10 @@ app.post('/api/send-otp-apply', async (req, res) => {
       });
     }
 
-    if (!otpRateLimiter.isAllowed(email)) {
+    const clientIP = req.ip || req.connection.remoteAddress;
+    const rateLimitKey = `${clientIP}-${email}`;
+
+    if (!otpRateLimiter.isAllowed(rateLimitKey)) {
       return res.status(429).json({
         success: false,
         message: 'Too many OTP requests. Please try again after 1 minute.'
@@ -818,7 +887,6 @@ app.post('/api/send-otp-apply', async (req, res) => {
       type: 'apply'
     });
 
-    // Queue email sending (non-blocking)
     emailQueue.add(
       () => sendOTPEmail(email, otp, 'apply'),
       'high'
@@ -826,7 +894,7 @@ app.post('/api/send-otp-apply', async (req, res) => {
       console.error('❌ Failed to queue OTP email:', error);
     });
 
-    console.log(`📧 OTP queued for ${email}: ${otp}`);
+    console.log(`📧 OTP queued for loan application`);
 
     res.status(200).json({
       success: true,
@@ -849,7 +917,29 @@ app.post('/api/send-otp-apply', async (req, res) => {
 // Verify OTP and submit contact form
 app.post('/contact', async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { email, otp, name, phone, state, district, require: requirement } = req.body;
+
+    // SECURITY: Validate all inputs
+    if (!email || !otp || !name || !phone || !state || !district) {
+      return res.status(400).json({
+        success: false,
+        message: 'All required fields must be provided'
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email format'
+      });
+    }
+
+    if (!isValidPhone(phone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid phone number format'
+      });
+    }
 
     // Verify OTP
     const storedData = otpStore.get(email);
@@ -857,30 +947,32 @@ app.post('/contact', async (req, res) => {
     if (!storedData) {
       return res.status(400).json({
         success: false,
-        message: 'OTP not found. Please request a new OTP.'
+        message: 'OTP not found or expired. Please request a new OTP.'
       });
     }
 
-    if (storedData.otp !== otp) {
+    if (storedData.otp !== otp.trim()) {
+      const attempts = otpStore.incrementAttempts(email);
       return res.status(400).json({
         success: false,
-        message: 'Invalid OTP. Please try again.'
+        message: 'Invalid OTP. Please try again.',
+        attemptsRemaining: 5 - attempts
       });
     }
 
-    // OTP verified successfully - delete it
+    // OTP verified - delete it
     otpStore.delete(email);
 
+    // SECURITY: Sanitize all inputs
     const contactData = {
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      state: req.body.state,
-      district: req.body.district,
-      require: req.body.require || req.body.message
+      name: sanitizeInput(name),
+      email: email,
+      phone: sanitizeInput(phone),
+      state: sanitizeInput(state),
+      district: sanitizeInput(district),
+      require: requirement ? sanitizeInput(requirement) : ''
     };
 
-    // Queue confirmation email (non-blocking)
     emailQueue.add(
       () => sendContactEmail(contactData),
       'normal'
@@ -890,17 +982,16 @@ app.post('/contact', async (req, res) => {
 
     console.log('✅ Contact form verified and queued');
 
-    // Respond immediately
     res.status(200).json({
       success: true,
-      message: 'Thank you for contacting us! Your email has been verified. We will get back to you soon.'
+      message: 'Thank you for contacting us! We will get back to you within 24-48 hours.'
     });
 
   } catch (error) {
     console.error('❌ Contact form error:', error);
     res.status(500).json({
       success: false,
-      message: 'An error occurred while submitting your request. Please try again.'
+      message: 'An error occurred. Please try again.'
     });
   }
 });
@@ -908,7 +999,60 @@ app.post('/contact', async (req, res) => {
 // Verify OTP and submit loan application
 app.post('/apply', async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const {
+      email, otp, name, age, employement, position, state, district,
+      loan, income, loan_amount, tenure, phone
+    } = req.body;
+
+    // SECURITY: Comprehensive validation
+    if (!email || !otp || !name || !age || !phone || !loan || !income || !loan_amount || !tenure) {
+      return res.status(400).json({
+        success: false,
+        message: 'All required fields must be provided'
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid email format'
+      });
+    }
+
+    if (!isValidPhone(phone)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid phone number'
+      });
+    }
+
+    if (!isValidAge(age)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Age must be between 18 and 100'
+      });
+    }
+
+    if (!isValidAmount(loan_amount)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid loan amount'
+      });
+    }
+
+    if (!isValidAmount(income)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid income amount'
+      });
+    }
+
+    if (!isValidTenure(tenure)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Tenure must be between 1 and 30 years'
+      });
+    }
 
     // Verify OTP
     const storedData = otpStore.get(email);
@@ -916,38 +1060,40 @@ app.post('/apply', async (req, res) => {
     if (!storedData) {
       return res.status(400).json({
         success: false,
-        message: 'OTP not found. Please request a new OTP.'
+        message: 'OTP not found or expired. Please request a new OTP.'
       });
     }
 
-    if (storedData.otp !== otp) {
+    if (storedData.otp !== otp.trim()) {
+      const attempts = otpStore.incrementAttempts(email);
       return res.status(400).json({
         success: false,
-        message: 'Invalid OTP. Please try again.'
+        message: 'Invalid OTP. Please try again.',
+        attemptsRemaining: 5 - attempts
       });
     }
 
-    // OTP verified successfully - delete it
+    // OTP verified - delete it
     otpStore.delete(email);
 
+    // SECURITY: Sanitize all inputs
     const applicationData = {
-      name: req.body.name,
-      age: req.body.age,
-      employement: req.body.employement,
-      position: req.body.position,
-      state: req.body.state,
-      district: req.body.district,
-      loan: req.body.loan,
-      income: req.body.income,
-      loan_amount: req.body.loan_amount,
-      tenure: req.body.tenure,
-      phone: req.body.phone,
-      email: req.body.email
+      name: sanitizeInput(name),
+      age: sanitizeInput(age),
+      employement: sanitizeInput(employement),
+      position: sanitizeInput(position),
+      state: sanitizeInput(state),
+      district: sanitizeInput(district),
+      loan: sanitizeInput(loan),
+      income: sanitizeInput(income),
+      loan_amount: sanitizeInput(loan_amount),
+      tenure: sanitizeInput(tenure),
+      phone: sanitizeInput(phone),
+      email: email
     };
 
-    const applicationId = `LA-${Date.now()}`;
+    const applicationId = `LA-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
-    // Queue confirmation email (non-blocking)
     emailQueue.add(
       () => sendLoanApplicationEmail(applicationData),
       'normal'
@@ -957,10 +1103,9 @@ app.post('/apply', async (req, res) => {
 
     console.log('✅ Loan application verified and queued');
 
-    // Respond immediately
     res.status(200).json({
       success: true,
-      message: 'Your loan application has been submitted successfully! Your email has been verified. We will contact you within 24-48 hours.',
+      message: 'Your loan application has been submitted successfully! We will contact you within 24-48 hours.',
       applicationId
     });
 
@@ -968,7 +1113,7 @@ app.post('/apply', async (req, res) => {
     console.error('❌ Loan application error:', error);
     res.status(500).json({
       success: false,
-      message: 'An error occurred while submitting your application. Please try again.'
+      message: 'An error occurred. Please try again.'
     });
   }
 });
@@ -983,7 +1128,10 @@ app.get('/api/health', (req, res) => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    memory: process.memoryUsage(),
+    memory: {
+      used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + ' MB',
+      total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + ' MB'
+    },
     otpStore: otpStore.getStats(),
     emailQueue: emailQueue.getStats()
   });
@@ -1012,9 +1160,14 @@ app.use((req, res, next) => {
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('❌ Global error handler:', err);
+
+  const message = process.env.NODE_ENV === 'production'
+    ? 'Internal server error'
+    : err.message;
+
   res.status(500).json({
     success: false,
-    message: 'Internal server error'
+    message
   });
 });
 
@@ -1038,6 +1191,16 @@ const gracefulShutdown = () => {
 process.on('SIGTERM', gracefulShutdown);
 process.on('SIGINT', gracefulShutdown);
 
+// SECURITY: Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  gracefulShutdown();
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 // Start server (only if not in Vercel environment)
 if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   app.listen(port, () => {
@@ -1052,4 +1215,4 @@ if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
 }
 
 // Export for Vercel
-module.exports = app;
+export default app;
