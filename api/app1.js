@@ -112,24 +112,19 @@ class OTPStore {
     const normalizedEmail = email.toLowerCase().trim();
     return this.store.delete(normalizedEmail);
   }
-
   startAutoCleanup() {
+    if (process.env.VERCEL) return; 
+
     this.cleanupInterval = setInterval(() => {
       const now = Date.now();
-      let cleaned = 0;
-
       for (const [email, data] of this.store.entries()) {
         if (now > data.expiryTime) {
           this.store.delete(email);
-          cleaned++;
         }
-      }
-
-      if (cleaned > 0) {
-        console.log(`🧹 Cleaned up ${cleaned} expired OTPs`);
       }
     }, 5 * 60 * 1000);
   }
+
 
   stopAutoCleanup() {
     if (this.cleanupInterval) {
@@ -230,7 +225,9 @@ class EmailQueue {
   }
 }
 
-const emailQueue = new EmailQueue(3);
+const emailQueue = new EmailQueue(
+  process.env.VERCEL ? 1 : 3
+);
 
 // ====================================================================================
 // EMAIL CONFIGURATION - Singleton transporter with connection pooling
@@ -731,13 +728,13 @@ app.use(express.static('views', {
   }
 }));
 
-app.use('/static', express.static('static'));
+// app.use('/static', express.static('static'));
 
 // SECURITY: Add body size limits
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(express.json({ limit: '10kb' }));
 
-app.use('/uploads', express.static('uploads'));
+// app.use('/uploads', express.static('uploads'));
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, '../views'));
